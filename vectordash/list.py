@@ -13,8 +13,9 @@ def list_machines():
         if os.path.isfile('./secret_token'):
             with open('./secret_token') as f:
                 secret_token = f.readline()
+                # print(secret_token)
                 full_url = "https://84119199.ngrok.io/api/list_machines/" + secret_token
-
+                # print(full_url)
                 try:
                     r = requests.get(full_url)
                     data = r.json()
@@ -28,6 +29,7 @@ def list_machines():
             print("Please make sure a valid token is stored. Run vectordash secret <token>")
     except TypeError:
         print("Please make sure a valid token is stored. Run vectordash secret <token>")
+
 
 if __name__ == '__main__':
     list_machines()

@@ -5,28 +5,36 @@ import os
 
 @click.command(name="secret")
 @click.pass_context
-def dist(ctx, count):
-    ctx.forward(test)
-    ctx.invoke(test, count=42)
-# @click.option('--token', help='Secret token to view your current machines.')
+# This dist function is needed for passing the context
+def dist(ctx):
+    ctx.invoke()
 
-
+# Stores the secret token locally in ./secret_token
 def store_secret(secret_token):
     """Stores the user's secret token."""
     try:
+        # if a previous token was stored, update it
         if os.path.isfile("./secret_token"):
-            print("Secret token being changed.")
+
+            # retrieve previous token (this may be unnecessary)
             with open("./secret_token") as f:
                 lines = f.readlines()
 
+            # change to user's new provided token
             lines[0] = secret_token
+
+            # update file with new token
             with open("./secret_token", "w") as g:
                 g.writelines(lines)
 
+            print("Secret token changed and stored.")
+
         else:
-            print("Secret token being created.")
+            # create new file ./secret_token to write into and add the secret token
             with open("./secret_token", "w+") as h:
                 h.write(secret_token)
+
+            print("Secret token created and stored.")
 
     except TypeError:
         print("Please make sure you are using the most recently generated token.")
@@ -39,7 +47,7 @@ if __name__ == '__main__':
 
             # Retrieve secret token from command and store it
             secret_token = sys.argv[1]
-            store_secret(secret_token + "\n")
+            store_secret(secret_token)
         else:
             print("Invalid command. Please enter a token value: vectordash secret <token>")
     except TypeError:
