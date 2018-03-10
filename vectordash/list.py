@@ -33,7 +33,7 @@ def list_machines():
                     print("Invalid token value. Please make sure you are using the most recently generated token.")
 
         else:
-            print("Please make sure a valid token is stored. Run vectordash secret <token>")
+            print("Please make sure a valid token is stored. Run 'vectordash secret <token>'")
 
     except TypeError:
         print("Please make sure a valid token is stored. Run 'vectordash secret <token>'")
