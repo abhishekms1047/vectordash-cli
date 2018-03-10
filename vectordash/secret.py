@@ -13,25 +13,31 @@ def dist(ctx):
 def store_secret(secret_token):
     """Stores the user's secret token."""
     try:
+        filename = "./vectordash_config/secret_token.txt"
         # if a previous token was stored, update it
-        if os.path.isfile("./secret_token"):
+        if os.path.isdir("./vectordash_config") and os.path.isfile(filename):
 
             # retrieve previous token (this may be unnecessary)
-            with open("./secret_token") as f:
+            with open(filename) as f:
                 lines = f.readlines()
 
             # change to user's new provided token
             lines[0] = secret_token
 
             # update file with new token
-            with open("./secret_token", "w") as g:
+            with open(filename, "w") as g:
                 g.writelines(lines)
 
             print("Secret token changed and stored.")
 
         else:
+            if not os.path.isdir("./vectordash_config"):
+                os.system("mkdir ./vectordash_config")
+
+                print("Made directory ./vectordash_config")
+
             # create new file ./secret_token to write into and add the secret token
-            with open("./secret_token", "w+") as h:
+            with open(filename, "w") as h:
                 h.write(secret_token)
 
             print("Secret token created and stored.")
