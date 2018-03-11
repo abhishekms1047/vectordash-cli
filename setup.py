@@ -1,13 +1,38 @@
-from distutils.core import setup
+#!/usr/bin/env python
+import os
+from setuptools import find_packages, setup
+
+project = "vectordash"
+version = "0.1.2"
+
+with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
+    long_description = readme.read()
+
 setup(
-  name = 'vectordash',
-  packages = ['vectordash'], # this must be the same as the name above
-  version = '0.1',
-  description = 'A lib to allow simple commands for vectordash GPUs',
-  author = 'Arbaz Khatib',
-  author_email = 'arbaz@vectordash.com',
-  url = 'https://github.com/Vectordash/vectordash-cli', # git repo
-  download_url = 'https://github.com/peterldowns/mypackage/archive/0.1.tar.gz', # Need to change
-  keywords = ['vectordash', 'ssh', 'list', 'push', 'pull', 'secret', 'arbaz', 'khatib'], # arbitrary keywords
-  classifiers = [],
+    name=project,
+    version=version,
+    description="A lib to allow simple commands for Vectordash GPUs",
+    long_description=long_description,
+    author="Arbaz Khatib",
+    author_email="contact@vectordash.com",
+    url="https://github.com/Vectordash/vectordash-cli",
+    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
+    include_package_data=True,
+    zip_safe=False,
+    keywords="vectordash",
+    install_requires=[
+        "click>=6.7,<7",
+        "requests>=2.18.4",
+        "os>=16.1",
+        "json>=2.11.1,<3.0.0b0",
+    ],
+    setup_requires=[],
+    dependency_links=[],
+    entry_points={
+        "console_scripts": [
+            "vectordash = vectordash.main:cli",
+            # "floyd-dev = floyd.development.dev:cli",
+            # "floyd-local = floyd.development.local:cli",
+        ],
+    },
 )
