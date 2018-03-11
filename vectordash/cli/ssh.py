@@ -5,35 +5,33 @@ import os
 import sys
 
 
-@click.command(name="push")
-@click.pass_context
-# This dist function is needed for passing the context
-def dist(ctx):
-    ctx.invoke()
+@click.command()
+@click.argument('machine', required=True, nargs=1)
+def ssh(machine):
+    """
+    Runs an ssh command to the machine with ID = @machine to allow user to connect.
 
-
-def push_to_machine(machine_id, from_path, to_path):
-    """Pushes file(s) to machine with id @machine_id using secret user token and ssh key."""
+    """
     try:
         # retrieve the secret token from the config folder
-        secret_token = "./vectordash_config/secret_token.txt"
+        token = "./vectordash_config/token.txt"
 
-        if os.path.isfile(secret_token):
-            with open(secret_token) as f:
-                secret_token = f.readline()
+        if os.path.isfile(token):
+            with open(token) as f:
+                token = f.readline()
 
             try:
                 # API endpoint for machine information
-                full_url = "https://84119199.ngrok.io/api/list_machines/" + secret_token
+                full_url = "https://84119199.ngrok.io/api/list_machines/" + token
                 r = requests.get(full_url)
 
                 # API connection is successful, retrieve the JSON object
                 if r.status_code == 200:
                     data = r.json()
 
-                    # machine_id provided is one this user has access to
-                    if data.get(machine_id):
-                        machine = (data.get(machine_id))
+                    # machine provided is one this user has access to
+                    if data.get(machine):
+                        machine = (data.get(machine))
                         print("Machine exists. Connecting...")
 
                         # Machine pem
@@ -56,9 +54,9 @@ def push_to_machine(machine_id, from_path, to_path):
                         user = str(machine['user'])
 
                         # execute ssh command
-                        push_command = "scp -r -P " + port + " -i " + key_file + " " + from_path + " " + user + "@" + ip + ":" + to_path
-                        print(push_command)
-                        os.system(push_command)
+                        ssh_command = "ssh " + user + "@" + ip + " -p " + port + " -i " + key_file
+                        print(ssh_command)
+                        os.system(ssh_command)
 
                     else:
                         print("Invalid machine id provided. Please make sure you are connecting to a valid machine")
@@ -74,24 +72,16 @@ def push_to_machine(machine_id, from_path, to_path):
             print("Please make sure a valid token is stored. Run 'vectordash secret <token>'")
 
     except TypeError:
-        print("There was a problem with push. Command is of the format 'vectordash push <id> <from_path> <to_path>' or 'vectordash push <id> <from_path>'")
+        print("There was a problem with ssh. Please ensure your command is of the format 'vectordash ssh <id>")
 
-if __name__ == '__main__':
-    # When valid command A is given (i.e machine_id, from_path, to_path are provided)
-    if len(sys.argv) == 4:
 
-        # Retrieve secret machine_id, from_path, to_path from command and store it
-        machine_id = sys.argv[1]
-        from_path = sys.argv[2]
-        to_path = sys.argv[3]
-        push_to_machine(machine_id, from_path, to_path)
-
-    # When valid command B is given (i.e machine_id, from_path are provided)
-    elif len(sys.argv) == 3:
-        machine_id = sys.argv[1]
-        from_path = sys.argv[2]
-        to_path = "~"
-        push_to_machine(machine_id, from_path, to_path)
-
-    else:
-        print("Incorrect number of arguments provided. Command is of the format 'vectordash push <machine_id> <from_path> <to_path>' or 'vectordash push <machine_id> <from_path>'")
+# Run command line command vectordash ssh <machine>
+# if __name__ == '__main__':
+#     # When valid command is given (i.e ONE machine ID is provided)
+#     if len(sys.argv) == 2:
+#
+#         # Retrieve machine from command and store it
+#         machine = sys.argv[1]
+#         ssh(machine)
+#     else:
+#         print("Incorrect number of arguments provided. Command should be of format 'vectordash ssh <machine>'")

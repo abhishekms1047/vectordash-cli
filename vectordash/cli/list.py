@@ -3,19 +3,20 @@ import requests
 import json
 import os
 
-@click.command(name="list")
 
+@click.command()
+def lists():
+    """
+    Retrieves JSON object from vectordash using secret user token and displays the list of machines that the
+    user is currently renting.
 
-
-def list_machines():
-    """Retrieves JSON object from vectordash using secret user token and displays the list of machines that the
-       user is currently renting."""
+    """
     try:
-        filename = "./vectordash_config/secret_token.txt"
+        filename = "./vectordash_config/token.txt"
         if os.path.isfile(filename):
             with open(filename) as f:
-                secret_token = f.readline()
-                full_url = "https://84119199.ngrok.io/api/list_machines/" + secret_token
+                token = f.readline()
+                full_url = "https://84119199.ngrok.io/api/list_machines/" + token
 
             try:
                 r = requests.get(full_url)
@@ -40,9 +41,9 @@ def list_machines():
 
 
 # Run command line command vectordash list
-if __name__ == '__main__':
-    # When valid command is given (i.e no extra arguments)
-    if len(sys.argv) == 1:
-        list_machines()
-    else:
-        print("Incorrect number of arguments provided. Command should be of format 'vectordash list'")
+# if __name__ == '__main__':
+#     # When valid command is given (i.e no extra arguments)
+#     if len(sys.argv) == 1:
+#         list_machines()
+#     else:
+#         print("Incorrect number of arguments provided. Command should be of format 'vectordash list'")

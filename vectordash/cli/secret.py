@@ -3,17 +3,15 @@ import sys
 import os
 
 
-@click.command(name="secret")
-@click.pass_context
-# This dist function is needed for passing the context
-def dist(ctx):
-    ctx.invoke()
+@click.command()
+@click.argument('token', required=True, nargs=1)
+def secret(token):
+    """
+    Stores the user's secret token.
 
-
-def store_secret(secret_token):
-    """Stores the user's secret token."""
+    """
     try:
-        filename = "./vectordash_config/secret_token.txt"
+        filename = "./vectordash_config/token.txt"
         # if a previous token was stored, update it
         if os.path.isdir("./vectordash_config") and os.path.isfile(filename):
 
@@ -22,7 +20,7 @@ def store_secret(secret_token):
                 lines = f.readlines()
 
             # change to user's new provided token
-            lines[0] = secret_token
+            lines[0] = token
 
             # update file with new token
             with open(filename, "w") as g:
@@ -36,9 +34,9 @@ def store_secret(secret_token):
 
                 print("Made directory ./vectordash_config")
 
-            # create new file ./secret_token to write into and add the secret token
+            # create new file ./token to write into and add the secret token
             with open(filename, "w") as h:
-                h.write(secret_token)
+                h.write(token)
 
             print("Secret token created and stored.")
 
@@ -46,12 +44,12 @@ def store_secret(secret_token):
         print("Please make sure you are using the most recently generated token.")
 
 # Run command line command vectordash secret <token>
-if __name__ == '__main__':
-    # When valid command is given (i.e ONE token is provided)
-    if len(sys.argv) == 2:
-
-        # Retrieve secret token from command and store it
-        secret_token = sys.argv[1]
-        store_secret(secret_token)
-    else:
-        print("Incorrect number of arguments provided. Command should be of format 'vectordash secret <token>'")
+# if __name__ == '__main__':
+#     # When valid command is given (i.e ONE token is provided)
+#     if len(sys.argv) == 2:
+#
+#         # Retrieve secret token from command and store it
+#         token = sys.argv[1]
+#         store_secret(token)
+#     else:
+#         print("Incorrect number of arguments provided. Command should be of format 'vectordash secret <token>'")

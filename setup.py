@@ -23,16 +23,13 @@ setup(
     install_requires=[
         "click>=6.7,<7",
         "requests>=2.18.4",
-        "os>=16.1",
-        "json>=2.11.1,<3.0.0b0",
+        "json",
     ],
     setup_requires=[],
     dependency_links=[],
     entry_points={
         "console_scripts": [
             "vectordash = vectordash.main:cli",
-            # "floyd-dev = floyd.development.dev:cli",
-            # "floyd-local = floyd.development.local:cli",
         ],
     },
 )

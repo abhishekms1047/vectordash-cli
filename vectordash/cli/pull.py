@@ -6,34 +6,29 @@ import sys
 
 
 @click.command(name="pull")
-@click.pass_context
-# This dist function is needed for passing the context
-def dist(ctx):
-    ctx.invoke()
-
-
-def pull_from_machine(machine_id, from_path, to_path):
-    """Pulls file(s) from machine with id @machine_id using secret user token and ssh key."""
+@click.argument('machine', required=True, nargs=1)
+def pull(machine, from_path, to_path):
+    """Pulls file(s) from machine with id @machine using secret user token and ssh key."""
     try:
         # retrieve the secret token from the config folder
-        secret_token = "./vectordash_config/secret_token.txt"
+        token = "./vectordash_config/token.txt"
 
-        if os.path.isfile(secret_token):
-            with open(secret_token) as f:
-                secret_token = f.readline()
+        if os.path.isfile(token):
+            with open(token) as f:
+                token = f.readline()
 
             try:
                 # API endpoint for machine information
-                full_url = "https://84119199.ngrok.io/api/list_machines/" + secret_token
+                full_url = "https://84119199.ngrok.io/api/list_machines/" + token
                 r = requests.get(full_url)
 
                 # API connection is successful, retrieve the JSON object
                 if r.status_code == 200:
                     data = r.json()
 
-                    # machine_id provided is one this user has access to
-                    if data.get(machine_id):
-                        machine = (data.get(machine_id))
+                    # machine provided is one this user has access to
+                    if data.get(machine):
+                        machine = (data.get(machine))
                         print("Machine exists. Connecting...")
 
                         # Machine pem
@@ -74,24 +69,25 @@ def pull_from_machine(machine_id, from_path, to_path):
             print("Please make sure a valid token is stored. Run 'vectordash secret <token>'")
 
     except TypeError:
-        print("There was a problem with pull. Commnd is of the format 'vectordash pull <id> <from_path> <to_path>' or 'vectordash pull <id> <from_path>'")
+        print("There was a problem with pull. Command is of the format 'vectordash pull <id> <from_path> <to_path>' or "
+              "'vectordash pull <id> <from_path>'")
 
-if __name__ == '__main__':
-    # When valid command A is given (i.e machine_id, from_path, to_path are provided)
-    if len(sys.argv) == 4:
-
-        # Retrieve secret machine_id, from_path, to_path from command and store it
-        machine_id = sys.argv[1]
-        from_path = sys.argv[2]
-        to_path = sys.argv[3]
-        pull_from_machine(machine_id, from_path, to_path)
-
-    # When valid command B is given (i.e machine_id, from_path are provided)
-    elif len(sys.argv) == 3:
-        machine_id = sys.argv[1]
-        from_path = sys.argv[2]
-        to_path = "."
-        pull_from_machine(machine_id, from_path, to_path)
-
-    else:
-        print("Incorrect number of arguments provided. Command is of the format 'vectordash pull <machine_id> <from_path> <to_path>' or 'vectordash push <machine_id> <from_path>'")
+# if __name__ == '__main__':
+#     # When valid command A is given (i.e machine, from_path, to_path are provided)
+#     if len(sys.argv) == 4:
+#
+#         # Retrieve secret machine, from_path, to_path from command and store it
+#         machine = sys.argv[1]
+#         from_path = sys.argv[2]
+#         to_path = sys.argv[3]
+#         pull_from_machine(machine, from_path, to_path)
+#
+#     # When valid command B is given (i.e machine, from_path are provided)
+#     elif len(sys.argv) == 3:
+#         machine = sys.argv[1]
+#         from_path = sys.argv[2]
+#         to_path = "."
+#         pull_from_machine(machine, from_path, to_path)
+#
+#     else:
+#         print("Incorrect number of arguments provided. Command is of the format 'vectordash pull <machine> <from_path> <to_path>' or 'vectordash push <machine> <from_path>'")
