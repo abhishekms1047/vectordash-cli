@@ -9,7 +9,7 @@ import os
 def dist(ctx):
     ctx.invoke()
 
-# Stores the secret token locally in ./secret_token
+
 def store_secret(secret_token):
     """Stores the user's secret token."""
     try:
@@ -47,14 +47,11 @@ def store_secret(secret_token):
 
 # Run command line command vectordash secret <token>
 if __name__ == '__main__':
-    try:
-        # When valid command is given (i.e ONE token is provided)
-        if len(sys.argv) == 2:
+    # When valid command is given (i.e ONE token is provided)
+    if len(sys.argv) == 2:
 
-            # Retrieve secret token from command and store it
-            secret_token = sys.argv[1]
-            store_secret(secret_token)
-        else:
-            print("Invalid command. Please enter a token value: vectordash secret <token>")
-    except TypeError:
-        print("Invalid command. Please enter a token value: vectordash secret <token>")
+        # Retrieve secret token from command and store it
+        secret_token = sys.argv[1]
+        store_secret(secret_token)
+    else:
+        print("Incorrect number of arguments provided. Command should be of format 'vectordash secret <token>'")

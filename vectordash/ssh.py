@@ -4,7 +4,8 @@ import json
 import os
 import sys
 
-@click.command(name="list")
+
+@click.command(name="ssh")
 @click.pass_context
 # This dist function is needed for passing the context
 def dist(ctx):
@@ -12,7 +13,7 @@ def dist(ctx):
 
 
 def ssh_into_machine(machine_id):
-    """Retrieves JSON object from vectordash using secret user token and displays the list."""
+    """Runs an ssh command to the machine with ID = @machine_id to allow user to connect."""
     try:
         # retrieve the secret token from the config folder
         secret_token = "./vectordash_config/secret_token.txt"
@@ -42,7 +43,7 @@ def ssh_into_machine(machine_id):
                         machine_name = (machine['name'].lower()).replace(" ", "")
                         key_file = "./vectordash_config/" + machine_name + "-key.pem"
 
-                        # create new file ./vectordash_config/<key_file>.pem to write into and add the secret token
+                        # create new file ./vectordash_config/<key_file>.pem to write into
                         with open(key_file, "w") as h:
                             h.write(pem)
 
@@ -76,13 +77,13 @@ def ssh_into_machine(machine_id):
         print("There was a problem with ssh. Please ensure your command is of the format 'vectordash ssh <id>")
 
 
-
+# Run command line command vectordash ssh <machine_id>
 if __name__ == '__main__':
-    # When valid command is given (i.e ONE token is provided)
+    # When valid command is given (i.e ONE machine ID is provided)
     if len(sys.argv) == 2:
 
-        # Retrieve secret token from command and store it
+        # Retrieve machine_id from command and store it
         machine_id = sys.argv[1]
         ssh_into_machine(machine_id)
     else:
-        print("Invalid command. Please enter a token value: vectordash secret <token>")
+        print("Incorrect number of arguments provided. Command should be of format 'vectordash ssh <machine_id>'")
