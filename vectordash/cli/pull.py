@@ -9,7 +9,10 @@ import os
 @click.argument('from_path', required=True, nargs=1)
 @click.argument('to_path', required=False, default='.', nargs=1)
 def pull(machine, from_path, to_path):
-    """Pulls file(s) from machine with id @machine using secret user token and ssh key."""
+    """
+    Pulls file(s) from machine with id @machine using secret user token and ssh key.
+
+    """
     try:
         # retrieve the secret token from the config folder
         token = "./vectordash_config/token.txt"

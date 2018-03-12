@@ -7,7 +7,7 @@ import os
 @click.command()
 @click.argument('machine', required=True, nargs=1)
 @click.argument('from_path', required=True, nargs=1)
-@click.argument('to_path', required=False, default='.', nargs=1)
+@click.argument('to_path', required=False, default='~', nargs=1)
 def push(machine, from_path, to_path):
     """
     Pushes file(s) to machine with id @machine using secret user token and ssh key.
@@ -46,15 +46,15 @@ def push(machine, from_path, to_path):
                         with open(key_file, "w") as h:
                             h.write(pem)
 
-                        # give key file permissions for ssh
+                        # give key file permissions for push
                         os.system("chmod 600 " + key_file)
 
-                        # Port, IP address, and user information for ssh command
+                        # Port, IP address, and user information for push command
                         port = str(machine['port'])
                         ip = str(machine['ip'])
                         user = str(machine['user'])
 
-                        # execute ssh command
+                        # execute push command
                         push_command = "scp -r -P " + port + " -i " + key_file + " " + from_path + " " + user + "@" + ip + ":" + to_path
                         print(push_command)
                         os.system(push_command)
