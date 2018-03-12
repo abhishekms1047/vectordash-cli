@@ -7,7 +7,7 @@ import os
 @click.command()
 @click.argument('machine', required=True, nargs=1)
 @click.argument('from_path', required=True, nargs=1)
-@click.argument('to_path', required=False, default='.', nargs=1)
+@click.argument('to_path', required=False, default='.', nargs=1, type=click.Path())
 def pull(machine, from_path, to_path):
     """
     Pulls file(s) from machine with id @machine using secret user token and ssh key.
