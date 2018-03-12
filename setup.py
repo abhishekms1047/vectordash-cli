@@ -23,7 +23,7 @@ setup(
     install_requires=[
         "click>=6.7,<7",
         "requests>=2.18.4",
-        "json",
+        "colored>=1.3.5",
     ],
     setup_requires=[],
     dependency_links=[],

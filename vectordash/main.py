@@ -2,7 +2,7 @@ import click
 
 
 import vectordash
-from vectordash.cli.list import lists
+from vectordash.cli.list import list
 from vectordash.cli.secret import secret
 from vectordash.cli.ssh import ssh
 from vectordash.cli.pull import pull
@@ -19,7 +19,7 @@ def cli():
 
 
 def add_commands(cli):
-    cli.add_command(lists)
+    cli.add_command(list)
     cli.add_command(secret)
     cli.add_command(ssh)
     cli.add_command(push)

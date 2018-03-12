@@ -42,14 +42,3 @@ def secret(token):
 
     except TypeError:
         print("Please make sure you are using the most recently generated token.")
-
-# Run command line command vectordash secret <token>
-# if __name__ == '__main__':
-#     # When valid command is given (i.e ONE token is provided)
-#     if len(sys.argv) == 2:
-#
-#         # Retrieve secret token from command and store it
-#         token = sys.argv[1]
-#         store_secret(token)
-#     else:
-#         print("Incorrect number of arguments provided. Command should be of format 'vectordash secret <token>'")

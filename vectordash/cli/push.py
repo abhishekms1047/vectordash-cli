@@ -2,21 +2,17 @@ import click
 import requests
 import json
 import os
-import vectordash
-import sys
 
-@click.group()
-def push():
-    """
-    Vectordash subcommand for data pushing to remote Vectordash machine.
-    
-    """
-    pass
 
 @click.command()
-@click.argument('machine', required=True, nargs=3)
+@click.argument('machine', required=True, nargs=1)
+@click.argument('from_path', required=True, nargs=1)
+@click.argument('to_path', required=False, default='.', nargs=1)
 def push(machine, from_path, to_path):
-    """Pushes file(s) to machine with id @machine using secret user token and ssh key."""
+    """
+    Pushes file(s) to machine with id @machine using secret user token and ssh key.
+
+    """
     try:
         # retrieve the secret token from the config folder
         token = "./vectordash_config/token.txt"
@@ -79,27 +75,3 @@ def push(machine, from_path, to_path):
     except TypeError:
         print("There was a problem with push. Command is of the format 'vectordash push <id> <from_path> <to_path>' or "
               "'vectordash push <id> <from_path>'")
-
-# if __name__ == '__main__':
-#     # When valid command A is given (i.e machine, from_path, to_path are provided)
-#     if len(sys.argv) == 4:
-#
-#         # Retrieve secret machine, from_path, to_path from command and store it
-#         machine = sys.argv[1]
-#         from_path = sys.argv[2]
-#         to_path = sys.argv[3]
-#         push_to_machine(machine, from_path, to_path)
-#
-#     # When valid command B is given (i.e machine, from_path are provided)
-#     elif len(sys.argv) == 3:
-#         machine = sys.argv[1]
-#         from_path = sys.argv[2]
-#         to_path = "~"
-#         push_to_machine(machine, from_path, to_path)
-#
-#     else:
-#         print("Incorrect number of arguments provided. Command is of the format 'vectordash push <machine> "
-#               "<from_path> <to_path>' or 'vectordash push <machine> <from_path>'")
-
-
-vectordash.add_command(push)

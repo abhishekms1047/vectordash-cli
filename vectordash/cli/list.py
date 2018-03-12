@@ -2,10 +2,11 @@ import click
 import requests
 import json
 import os
+import colored
 
 
 @click.command()
-def lists():
+def list():
     """
     Retrieves JSON object from vectordash using secret user token and displays the list of machines that the
     user is currently renting.
@@ -24,9 +25,14 @@ def lists():
                 if r.status_code == 200:
                     data = r.json()
 
-                    for key, value in data.items():
-                        machine = "[" + key + "]: " + value['name']
-                        print(machine)
+                    if len(data) > 0:
+                        print("Your Vectordash machines:")
+                        for key, value in data.items():
+                            id = colored.stylize("[" + str(key) + "]", colored.fg("green"))
+                            machine = id + value['name']
+                            print(machine)
+                    else:
+                        print("You are not currently renting any machine. Go to https://vectordash.com to browse GPUs.")
                 else:
                     print("Could not connect to vectordash API with provided token")
 
@@ -38,12 +44,3 @@ def lists():
 
     except TypeError:
         print("Please make sure a valid token is stored. Run 'vectordash secret <token>'")
-
-
-# Run command line command vectordash list
-# if __name__ == '__main__':
-#     # When valid command is given (i.e no extra arguments)
-#     if len(sys.argv) == 1:
-#         list_machines()
-#     else:
-#         print("Incorrect number of arguments provided. Command should be of format 'vectordash list'")

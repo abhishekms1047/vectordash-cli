@@ -2,11 +2,12 @@ import click
 import requests
 import json
 import os
-import sys
 
 
-@click.command(name="pull")
+@click.command()
 @click.argument('machine', required=True, nargs=1)
+@click.argument('from_path', required=True, nargs=1)
+@click.argument('to_path', required=False, default='.', nargs=1)
 def pull(machine, from_path, to_path):
     """Pulls file(s) from machine with id @machine using secret user token and ssh key."""
     try:

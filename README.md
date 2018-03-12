@@ -10,9 +10,6 @@ A command line tool for interacting with [Vectordash](http://vectordash.com) GPU
 
 `vectordash ssh <machine_id>` - connect the user to a machine via SSH
 
-
-And the holy grail...
-
 `vectordash push <machine_id> <from_path> <to_path>`
 
 This uses scp to push files to the machine. If `<to_path>` is not included,

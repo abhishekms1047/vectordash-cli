@@ -2,7 +2,6 @@ import click
 import requests
 import json
 import os
-import sys
 
 
 @click.command()
