@@ -15,11 +15,13 @@ def list():
 
     """
     try:
-        filename = "./vectordash_config/token.txt"
+        root = str(os.path.expanduser("~"))
+        filename = root + "/.vectordash/token"
+
         if os.path.isfile(filename):
             with open(filename) as f:
-                token = f.readline()
-                full_url = API_URL + str(token)
+                secret_token = f.readline()
+                full_url = API_URL + str(secret_token)
 
             try:
                 r = requests.get(full_url)
@@ -28,14 +30,15 @@ def list():
                     data = r.json()
 
                     if len(data) > 0:
+                        green_bolded = fg("green") + attr("bold")
                         print("Your Vectordash machines:")
                         for key, value in data.items():
-                            green_bolded = fg("green") + attr("bold")
                             pretty_id = stylize("[" + str(key) + "]", green_bolded)
                             machine = str(pretty_id) + " " + str(value['name'])
                             print(machine)
                     else:
-                        print("You are not currently renting any machine. Go to https://vectordash.com to browse GPUs.")
+                        vd = stylize("https://vectordash.com", fg("blue"))
+                        print("You are not currently renting any machine. Go to " + vd + " to browse GPUs.")
                 else:
                     print(stylize("Could not connect to vectordash API with provided token", fg("red")))
 
@@ -43,7 +46,7 @@ def list():
                 print(stylize("Invalid token value", fg("red")))
 
         else:
-            print("Unable to locate token. Please make sure a valid token is stored.")
+            print(stylize("Unable to locate token. Please make sure a valid token is stored.", fg("red")))
             print("Run " + stylize("vectordash secret <token>", fg("blue")))
             print("Your token can be found at " + stylize(str(TOKEN_URL), fg("blue")))
 

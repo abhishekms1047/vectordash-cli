@@ -12,9 +12,10 @@ def secret(token):
 
     """
     try:
-        filename = "./vectordash_config/token.txt"
+        root = str(os.path.expanduser("~"))
+        filename = root + "/.vectordash/token"
         # if a previous token was stored, update it
-        if os.path.isdir("./vectordash_config") and os.path.isfile(filename):
+        if os.path.isdir(root + "/.vectordash") and os.path.isfile(filename):
 
             # retrieve previous token (this may be unnecessary)
             with open(filename) as f:
@@ -27,15 +28,16 @@ def secret(token):
             with open(filename, "w") as g:
                 g.writelines(lines)
 
-            print("Secret token changed and stored.")
+            print(stylize("Secret token changed and stored.", fg("green")))
 
         else:
-            if not os.path.isdir("./vectordash_config"):
-                os.system("mkdir ./vectordash_config")
+            if not os.path.isdir(root + "/.vectordash"):
+                cmd = "mkdir " + root + "/.vectordash"
+                os.system(cmd)
 
-                print(stylize("Made directory ./vectordash_config", fg("green")))
+                print(stylize("Made directory ~/.vectordash", fg("green")))
 
-            # create new file ./token to write into and add the secret token
+            # create new file ~/.vectordash/token to write into and add the secret token
             with open(filename, "w") as h:
                 h.write(token)
 

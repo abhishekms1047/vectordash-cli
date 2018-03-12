@@ -17,15 +17,16 @@ def ssh(machine):
     """
     try:
         # retrieve the secret token from the config folder
-        token = "./vectordash_config/token.txt"
+        root = str(os.path.expanduser("~"))
+        token = root + "/.vectordash/token"
 
         if os.path.isfile(token):
             with open(token) as f:
-                token = f.readline()
+                secret_token = f.readline()
 
             try:
                 # API endpoint for machine information
-                full_url = API_URL + str(token)
+                full_url = API_URL + str(secret_token)
                 r = requests.get(full_url)
 
                 # API connection is successful, retrieve the JSON object
@@ -42,9 +43,9 @@ def ssh(machine):
 
                         # name for pem key file, formatted to be stored
                         machine_name = (machine['name'].lower()).replace(" ", "")
-                        key_file = "./vectordash_config/" + machine_name + "-key.pem"
+                        key_file = root + "/.vectordash/" + machine_name + "-key.pem"
 
-                        # create new file ./vectordash_config/<key_file>.pem to write into
+                        # create new file ~/.vectordash/<key_file>.pem to write into
                         with open(key_file, "w") as h:
                             h.write(pem)
 
@@ -62,7 +63,8 @@ def ssh(machine):
                         os.system(ssh_command)
 
                     else:
-                        print("Invalid machine id provided. Please make sure you are connecting to a valid machine")
+                        print(stylize(machine + " is not a valid machine id.", fg("red")))
+                        print("Please make sure you are connecting to a valid machine")
 
                 else:
                     print(stylize("Could not connect to vectordash API with provided token", fg("red")))
@@ -72,7 +74,7 @@ def ssh(machine):
 
         else:
             # If token is not stored, the command will not execute
-            print("Unable to connect with stored token. Please make sure a valid token is stored.")
+            print(stylize("Unable to connect with stored token. Please make sure a valid token is stored.", fg("red")))
             print("Run " + stylize("vectordash secret <token>", fg("blue")))
             print("Your token can be found at " + stylize(str(TOKEN_URL), fg("blue")))
 
