@@ -2,6 +2,10 @@ import click
 import requests
 import json
 import os
+from colored import fg
+from colored import stylize
+
+from vectordash import API_URL, TOKEN_URL
 
 
 @click.command()
@@ -10,7 +14,7 @@ import os
 @click.argument('to_path', required=False, default='.', nargs=1, type=click.Path())
 def pull(machine, from_path, to_path):
     """
-    Pulls file(s) from machine with id @machine using secret user token and ssh key.
+    Pulls file(s) from machine
 
     """
     try:
@@ -23,7 +27,7 @@ def pull(machine, from_path, to_path):
 
             try:
                 # API endpoint for machine information
-                full_url = "https://84119199.ngrok.io/api/list_machines/" + token
+                full_url = API_URL + str(token)
                 r = requests.get(full_url)
 
                 # API connection is successful, retrieve the JSON object
@@ -33,7 +37,7 @@ def pull(machine, from_path, to_path):
                     # machine provided is one this user has access to
                     if data.get(machine):
                         machine = (data.get(machine))
-                        print("Machine exists. Connecting...")
+                        print(stylize("Machine exists...", fg("green")))
 
                         # Machine pem
                         pem = machine['pem']
@@ -56,42 +60,26 @@ def pull(machine, from_path, to_path):
 
                         # execute pull command
                         pull_command = "scp -r -P " + port + " -i " + key_file + " " + user + "@" + ip + ":" + from_path + " " + to_path
-                        print(pull_command)
+                        print("Executing " + stylize(pull_command, fg("blue")))
                         os.system(pull_command)
 
                     else:
                         print("Invalid machine id provided. Please make sure you are connecting to a valid machine")
 
                 else:
-                    print("Could not connect to vectordash API with provided token")
+                    print(stylize("Could not connect to vectordash API with provided token", fg("red")))
 
             except json.decoder.JSONDecodeError:
-                print("Invalid token value. Please make sure you are using the most recently generated token.")
+                print(stylize("Invalid token value", fg("red")))
 
         else:
             # If token is not stored, the command will not execute
-            print("Please make sure a valid token is stored. Run 'vectordash secret <token>'")
+            print("Unable to connect with stored token. Please make sure a valid token is stored.")
+            print("Run " + stylize("vectordash secret <token>", fg("blue")))
+            print("Your token can be found at " + stylize(str(TOKEN_URL), fg("blue")))
 
     except TypeError:
-        print("There was a problem with pull. Command is of the format 'vectordash pull <id> <from_path> <to_path>' or "
-              "'vectordash pull <id> <from_path>'")
-
-# if __name__ == '__main__':
-#     # When valid command A is given (i.e machine, from_path, to_path are provided)
-#     if len(sys.argv) == 4:
-#
-#         # Retrieve secret machine, from_path, to_path from command and store it
-#         machine = sys.argv[1]
-#         from_path = sys.argv[2]
-#         to_path = sys.argv[3]
-#         pull_from_machine(machine, from_path, to_path)
-#
-#     # When valid command B is given (i.e machine, from_path are provided)
-#     elif len(sys.argv) == 3:
-#         machine = sys.argv[1]
-#         from_path = sys.argv[2]
-#         to_path = "."
-#         pull_from_machine(machine, from_path, to_path)
-#
-#     else:
-#         print("Incorrect number of arguments provided. Command is of the format 'vectordash pull <machine> <from_path> <to_path>' or 'vectordash push <machine> <from_path>'")
+        type_err = "There was a problem with pull. Command is of the format "
+        cmd_1 = stylize("vectordash pull <id> <from_path> <to_path>", fg("blue"))
+        cmd_2 = stylize("vectordash pull <id> <from_path>", fg("blue"))
+        print(type_err + cmd_1 + " or " + cmd_2)

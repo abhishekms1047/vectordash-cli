@@ -1,13 +1,14 @@
 import click
-import sys
 import os
+from colored import fg
+from colored import stylize
 
 
 @click.command()
 @click.argument('token', required=True, nargs=1)
 def secret(token):
     """
-    Stores the user's secret token.
+    Stores the user's secret token
 
     """
     try:
@@ -32,13 +33,13 @@ def secret(token):
             if not os.path.isdir("./vectordash_config"):
                 os.system("mkdir ./vectordash_config")
 
-                print("Made directory ./vectordash_config")
+                print(stylize("Made directory ./vectordash_config", fg("green")))
 
             # create new file ./token to write into and add the secret token
             with open(filename, "w") as h:
                 h.write(token)
 
-            print("Secret token created and stored.")
+            print(stylize("Secret token created and stored.", fg("green")))
 
     except TypeError:
-        print("Please make sure you are using the most recently generated token.")
+        print(stylize("Please make sure you are using the most recently generated token.", fg("red")))

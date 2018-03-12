@@ -2,13 +2,17 @@ import click
 import requests
 import json
 import os
+from colored import fg
+from colored import stylize
+
+from vectordash import API_URL, TOKEN_URL
 
 
 @click.command()
 @click.argument('machine', required=True, nargs=1)
 def ssh(machine):
     """
-    Runs an ssh command to the machine with ID = @machine to allow user to connect.
+    Runs an ssh command to the machine to allow user to connect
 
     """
     try:
@@ -21,7 +25,7 @@ def ssh(machine):
 
             try:
                 # API endpoint for machine information
-                full_url = "https://84119199.ngrok.io/api/list_machines/" + token
+                full_url = API_URL + str(token)
                 r = requests.get(full_url)
 
                 # API connection is successful, retrieve the JSON object
@@ -31,7 +35,7 @@ def ssh(machine):
                     # machine provided is one this user has access to
                     if data.get(machine):
                         machine = (data.get(machine))
-                        print("Machine exists. Connecting...")
+                        print(stylize("Machine exists. Connecting...", fg("green")))
 
                         # Machine pem
                         pem = machine['pem']
@@ -54,33 +58,24 @@ def ssh(machine):
 
                         # execute ssh command
                         ssh_command = "ssh " + user + "@" + ip + " -p " + port + " -i " + key_file
-                        print(ssh_command)
+                        print("Executing " + stylize(ssh_command, fg("blue")))
                         os.system(ssh_command)
 
                     else:
                         print("Invalid machine id provided. Please make sure you are connecting to a valid machine")
 
                 else:
-                    print("Could not connect to vectordash API with provided token")
+                    print(stylize("Could not connect to vectordash API with provided token", fg("red")))
 
             except json.decoder.JSONDecodeError:
-                print("Invalid token value. Please make sure you are using the most recently generated token.")
+                print(stylize("Invalid token value", fg("red")))
 
         else:
             # If token is not stored, the command will not execute
-            print("Please make sure a valid token is stored. Run 'vectordash secret <token>'")
+            print("Unable to connect with stored token. Please make sure a valid token is stored.")
+            print("Run " + stylize("vectordash secret <token>", fg("blue")))
+            print("Your token can be found at " + stylize(str(TOKEN_URL), fg("blue")))
 
     except TypeError:
-        print("There was a problem with ssh. Please ensure your command is of the format 'vectordash ssh <id>")
-
-
-# Run command line command vectordash ssh <machine>
-# if __name__ == '__main__':
-#     # When valid command is given (i.e ONE machine ID is provided)
-#     if len(sys.argv) == 2:
-#
-#         # Retrieve machine from command and store it
-#         machine = sys.argv[1]
-#         ssh(machine)
-#     else:
-#         print("Incorrect number of arguments provided. Command should be of format 'vectordash ssh <machine>'")
+        type_err = "There was a problem with ssh. Please ensure your command is of the format "
+        print(type_err + stylize("vectordash ssh <id>", fg("blue")))

@@ -2,7 +2,10 @@ import click
 import requests
 import json
 import os
+from colored import fg
+from colored import stylize
 
+from vectordash import API_URL, TOKEN_URL
 
 @click.command()
 @click.argument('machine', required=True, nargs=1)
@@ -10,7 +13,7 @@ import os
 @click.argument('to_path', required=False, default='~', nargs=1)
 def push(machine, from_path, to_path):
     """
-    Pushes file(s) to machine with id @machine using secret user token and ssh key.
+    Pushes file(s) to the machine
 
     """
     try:
@@ -23,7 +26,7 @@ def push(machine, from_path, to_path):
 
             try:
                 # API endpoint for machine information
-                full_url = "https://84119199.ngrok.io/api/list_machines/" + token
+                full_url = API_URL + str(token)
                 r = requests.get(full_url)
 
                 # API connection is successful, retrieve the JSON object
@@ -33,7 +36,7 @@ def push(machine, from_path, to_path):
                     # machine provided is one this user has access to
                     if data.get(machine):
                         machine = (data.get(machine))
-                        print("Machine exists. Connecting...")
+                        print(stylize("Machine exists...", fg("green")))
 
                         # Machine pem
                         pem = machine['pem']
@@ -56,22 +59,26 @@ def push(machine, from_path, to_path):
 
                         # execute push command
                         push_command = "scp -r -P " + port + " -i " + key_file + " " + from_path + " " + user + "@" + ip + ":" + to_path
-                        print(push_command)
+                        print("Executing " + stylize(push_command, fg("blue")))
                         os.system(push_command)
 
                     else:
                         print("Invalid machine id provided. Please make sure you are connecting to a valid machine")
 
                 else:
-                    print("Could not connect to vectordash API with provided token")
+                    print(stylize("Could not connect to vectordash API with provided token", fg("red")))
 
             except json.decoder.JSONDecodeError:
-                print("Invalid token value. Please make sure you are using the most recently generated token.")
+                print(stylize("Invalid token value", fg("red")))
 
         else:
             # If token is not stored, the command will not execute
-            print("Please make sure a valid token is stored. Run 'vectordash secret <token>'")
+            print("Unable to connect with stored token. Please make sure a valid token is stored.")
+            print("Run " + stylize("vectordash secret <token>", fg("blue")))
+            print("Your token can be found at " + stylize(str(TOKEN_URL), fg("blue")))
 
     except TypeError:
-        print("There was a problem with push. Command is of the format 'vectordash push <id> <from_path> <to_path>' or "
-              "'vectordash push <id> <from_path>'")
+        type_err = "There was a problem with push. Command is of the format "
+        cmd_1 = stylize("vectordash push <id> <from_path> <to_path>", fg("blue"))
+        cmd_2 = stylize("vectordash push <id> <from_path>", fg("blue"))
+        print(type_err + cmd_1 + " or " + cmd_2)

@@ -1,7 +1,5 @@
 import click
 
-
-import vectordash
 from vectordash.cli.list import list
 from vectordash.cli.secret import secret
 from vectordash.cli.ssh import ssh
