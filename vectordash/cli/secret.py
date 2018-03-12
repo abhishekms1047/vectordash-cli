@@ -12,36 +12,19 @@ def secret(token):
 
     """
     try:
-        root = str(os.path.expanduser("~"))
-        filename = root + "/.vectordash/token"
-        # if a previous token was stored, update it
-        if os.path.isdir(root + "/.vectordash") and os.path.isfile(filename):
+        # defining the dot folder path and token file name
+        dot_folder = os.path.expanduser('~/.vectordash')
+        token_path = os.path.join(dot_folder, 'token')
 
-            # retrieve previous token (this may be unnecessary)
-            with open(filename) as f:
-                lines = f.readlines()
+        # ensuring ~/.vectordash/ exists
+        if not os.path.isdir(dot_folder):
+            os.mkdir(dot_folder)
 
-            # change to user's new provided token
-            lines[0] = token
+        # writing out the token
+        with open(token_path, 'w') as f:
+            f.write(str(token))
 
-            # update file with new token
-            with open(filename, "w") as g:
-                g.writelines(lines)
-
-            print(stylize("Secret token changed and stored.", fg("green")))
-
-        else:
-            if not os.path.isdir(root + "/.vectordash"):
-                cmd = "mkdir " + root + "/.vectordash"
-                os.system(cmd)
-
-                print(stylize("Made directory ~/.vectordash", fg("green")))
-
-            # create new file ~/.vectordash/token to write into and add the secret token
-            with open(filename, "w") as h:
-                h.write(token)
-
-            print(stylize("Secret token created and stored.", fg("green")))
+        print(stylize("Secret successfully updated.", fg("green")))
 
     except TypeError:
-        print(stylize("Please make sure you are using the most recently generated token.", fg("red")))
+        print(stylize("Error: the provided token was an invalid type.", fg("red")))

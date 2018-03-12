@@ -11,7 +11,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
 setup(
     name=project,
     version=version,
-    description="A lib to allow simple commands for Vectordash GPUs",
+    description="Command line interface for interacting with Vectordash GPUs.",
     long_description=long_description,
     author="Arbaz Khatib",
     author_email="contact@vectordash.com",

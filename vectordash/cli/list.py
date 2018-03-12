@@ -15,8 +15,7 @@ def list():
 
     """
     try:
-        root = str(os.path.expanduser("~"))
-        filename = root + "/.vectordash/token"
+        filename = os.path.expanduser('~/.vectordash/token')
 
         if os.path.isfile(filename):
             with open(filename) as f:

@@ -20,7 +20,7 @@ def pull(machine, from_path, to_path):
     try:
         # retrieve the secret token from the config folder
         root = str(os.path.expanduser("~"))
-        token = root + "/.vectordash/token"
+        token = os.path.expanduser('~/.vectordash/token')
 
         if os.path.isfile(token):
             with open(token) as f:
@@ -38,7 +38,6 @@ def pull(machine, from_path, to_path):
                     # machine provided is one this user has access to
                     if data.get(machine):
                         machine = (data.get(machine))
-                        print(stylize("Machine exists...", fg("green")))
 
                         # Machine pem
                         pem = machine['pem']
