@@ -22,7 +22,7 @@ def push(machine, from_path, to_path):
     """
     try:
         # retrieve the secret token from the config folder
-        root = os.path.expanduser("~")
+        root = str(os.path.expanduser("~"))
         token = str(root) + "/.vectordash/token"
 
         if os.path.isfile(token):
