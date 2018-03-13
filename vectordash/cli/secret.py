@@ -8,6 +8,7 @@ from colored import stylize
 @click.argument('token', required=True, nargs=1)
 def secret(token):
     """
+    args: <token>
     Stores the user's secret token
 
     """

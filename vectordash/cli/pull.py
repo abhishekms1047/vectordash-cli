@@ -14,6 +14,9 @@ from vectordash import API_URL, TOKEN_URL
 @click.argument('to_path', required=False, default='.', nargs=1, type=click.Path())
 def pull(machine, from_path, to_path):
     """
+    args: <machine> <from_path> <to_path>
+    Argument @to_path is optional. If not provided, defaults to '.' (current dir).
+
     Pulls file(s) from machine
 
     """

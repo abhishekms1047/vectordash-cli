@@ -11,6 +11,7 @@ from vectordash import API_URL, TOKEN_URL
 @click.command()
 def list():
     """
+    args: None
     Displays the list of machines that user is currently renting
 
     """

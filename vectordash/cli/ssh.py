@@ -12,7 +12,8 @@ from vectordash import API_URL, TOKEN_URL
 @click.argument('machine', required=True, nargs=1)
 def ssh(machine):
     """
-    Runs an ssh command to the machine to allow user to connect
+    args: <machine>
+    Runs an ssh command to the machine to allow user to connect.
 
     """
     try:

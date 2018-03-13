@@ -7,13 +7,17 @@ from colored import stylize
 
 from vectordash import API_URL, TOKEN_URL
 
+
 @click.command()
 @click.argument('machine', required=True, nargs=1)
 @click.argument('from_path', required=True, nargs=1, type=click.Path())
 @click.argument('to_path', required=False, default='~', nargs=1)
 def push(machine, from_path, to_path):
     """
-    Pushes file(s) to the machine
+    args: <machine> <from_path> <to_path>
+    Argument @to_path is optional. If not provided, defaults to '~' (home dir).
+
+    Pushes file(s) to the machine.
 
     """
     try:
