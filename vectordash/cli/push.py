@@ -2,6 +2,7 @@ import click
 import requests
 import json
 import os
+import subprocess
 from colored import fg
 from colored import stylize
 
@@ -63,9 +64,9 @@ def push(machine, from_path, to_path):
                         user = str(machine['user'])
 
                         # execute push command
-                        push_command = "scp -r -P " + port + " -i " + key_file + " " + from_path + " " + user + "@" + ip + ":" + to_path
-                        print("Executing " + stylize(push_command, fg("blue")))
-                        os.system(push_command)
+                        push_command = ["scp", "-r", "-P", port, "-i", key_file, from_path, user + "@" + ip + ":" + to_path]
+                        print("Executing " + stylize(" ".join(push_command), fg("blue")))
+                        subprocess.check_call(push_command)
 
                     else:
                         print(stylize(machine + " is not a valid machine id.", fg("red")))

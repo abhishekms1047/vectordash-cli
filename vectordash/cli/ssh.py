@@ -2,6 +2,7 @@ import click
 import requests
 import json
 import os
+import subprocess
 from colored import fg
 from colored import stylize
 
@@ -59,9 +60,9 @@ def ssh(machine):
                         user = str(machine['user'])
 
                         # execute ssh command
-                        ssh_command = "ssh " + user + "@" + ip + " -p " + port + " -i " + key_file
-                        print("Executing " + stylize(ssh_command, fg("blue")))
-                        os.system(ssh_command)
+                        ssh_command = ["ssh", user + "@" + ip, "-p", port, "-i", key_file]
+                        print("Executing " + stylize(" ".join(ssh_command), fg("blue")))
+                        subprocess.check_call(ssh_command)
 
                     else:
                         print(stylize(machine + " is not a valid machine id.", fg("red")))

@@ -2,6 +2,7 @@ import click
 import requests
 import json
 import os
+import subprocess
 from colored import fg
 from colored import stylize
 
@@ -62,9 +63,9 @@ def pull(machine, from_path, to_path):
                         user = str(machine['user'])
 
                         # execute pull command
-                        pull_command = "scp -r -P " + port + " -i " + key_file + " " + user + "@" + ip + ":" + from_path + " " + to_path
-                        print("Executing " + stylize(pull_command, fg("blue")))
-                        os.system(pull_command)
+                        pull_command = ["scp", "-r", "-P", port, "-i", key_file, user + "@" + ip + ":" + from_path, to_path]
+                        print("Executing " + stylize(" ".join(pull_command), fg("blue")))
+                        subprocess.check_call(pull_command)
 
                     else:
                         print(stylize(machine + " is not a valid machine id.", fg("red")))
