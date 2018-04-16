@@ -14,7 +14,7 @@ def secret(token):
     """
     try:
         # defining the dot folder path and token file name
-        dot_folder = os.path.expanduser('~/.vectordash')
+        dot_folder = os.path.expanduser('~/.vectordash/')
         token_path = os.path.join(dot_folder, 'token')
 
         # ensuring ~/.vectordash/ exists
