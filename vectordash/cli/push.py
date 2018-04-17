@@ -56,7 +56,7 @@ def push(machine, from_path, to_path):
                             h.write(pem)
 
                         # give key file permissions for push
-                        os.system("chmod 600 " + key_file)
+                        os.chmod(key_file, 600)
 
                         # Port, IP address, and user information for push command
                         port = str(machine['port'])

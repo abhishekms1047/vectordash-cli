@@ -6,7 +6,7 @@ from colored import fg
 from colored import stylize
 from colored import attr
 
-from vectordash import API_URL, TOKEN_URL
+from vectordash import API_URL, TOKEN_URL, VECTORDASH_URL
 
 @click.command()
 def list():
@@ -37,10 +37,10 @@ def list():
                             machine = str(pretty_id) + " " + str(value['name'])
                             print(machine)
                     else:
-                        vd = stylize("https://vectordash.com", fg("blue"))
+                        vd = stylize(VECTORDASH_URL, fg("blue"))
                         print("You are not currently renting any machines. Go to " + vd + " to browse GPUs.")
                 else:
-                    print(stylize("Could not connect to vectordash API with provided token", fg("red")))
+                    print(stylize("Could not connect to Vectordash API with provided token", fg("red")))
 
             except json.decoder.JSONDecodeError:
                 print(stylize("Invalid token value", fg("red")))

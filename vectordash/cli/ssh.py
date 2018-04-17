@@ -52,7 +52,7 @@ def ssh(machine):
                             h.write(pem)
 
                         # give key file permissions for ssh
-                        os.system("chmod 600 " + key_file)
+                        os.chmod(key_file, 600)
 
                         # Port, IP address, and user information for ssh command
                         port = str(machine['port'])

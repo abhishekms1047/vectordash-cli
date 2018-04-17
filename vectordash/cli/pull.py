@@ -55,7 +55,7 @@ def pull(machine, from_path, to_path):
                             h.write(pem)
 
                         # give key file permissions for scp
-                        os.system("chmod 600 " + key_file)
+                        os.chmod(key_file, 600)
 
                         # Port, IP address, and user information for pull command
                         port = str(machine['port'])
@@ -72,7 +72,7 @@ def pull(machine, from_path, to_path):
                         print("Please make sure you are connecting to a valid machine")
 
                 else:
-                    print(stylize("Could not connect to vectordash API with provided token", fg("red")))
+                    print(stylize("Could not connect to Vectordash API with provided token", fg("red")))
 
             except json.decoder.JSONDecodeError:
                 print(stylize("Invalid token value", fg("red")))
@@ -84,7 +84,7 @@ def pull(machine, from_path, to_path):
             print("Your token can be found at " + stylize(str(TOKEN_URL), fg("blue")))
 
     except TypeError:
-        type_err = "There was a problem with pull. Command is of the format "
+        type_err = "There was a problem with pull. Command should be of the format "
         cmd_1 = stylize("vectordash pull <id> <from_path> <to_path>", fg("blue"))
         cmd_2 = stylize("vectordash pull <id> <from_path>", fg("blue"))
         print(type_err + cmd_1 + " or " + cmd_2)
