@@ -37,14 +37,14 @@ def ssh(machine):
 
                     # machine provided is one this user has access to
                     if data.get(machine):
-                        machine = (data.get(machine))
+                        gpu_mach = (data.get(machine))
                         print(stylize("Machine exists. Connecting...", fg("green")))
 
                         # Machine pem
-                        pem = machine['pem']
+                        pem = gpu_mach['pem']
 
                         # name for pem key file, formatted to be stored
-                        machine_name = (machine['name'].lower()).replace(" ", "")
+                        machine_name = (gpu_mach['name'].lower()).replace(" ", "")
                         key_file = root + "/.vectordash/" + machine_name + "-key.pem"
 
                         # create new file ~/.vectordash/<key_file>.pem to write into
@@ -55,9 +55,9 @@ def ssh(machine):
                         os.chmod(key_file, 600)
 
                         # Port, IP address, and user information for ssh command
-                        port = str(machine['port'])
-                        ip = str(machine['ip'])
-                        user = str(machine['user'])
+                        port = str(gpu_mach['port'])
+                        ip = str(gpu_mach['ip'])
+                        user = str(gpu_mach['user'])
 
                         # execute ssh command
                         ssh_command = ["ssh", user + "@" + ip, "-p", port, "-i", key_file]
