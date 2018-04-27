@@ -68,6 +68,7 @@ def push(machine, from_path, to_path):
                     try:
                         subprocess.check_call(push_command)
                     except subprocess.CalledProcessError:
+                        print("Your instance is initializing. Please wait a few seconds")
                         pass
 
                 else:
