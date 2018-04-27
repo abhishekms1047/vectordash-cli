@@ -41,7 +41,6 @@ def push(machine, from_path, to_path):
                 # machine provided is one this user has access to
                 if data.get(machine):
                     machine = (data.get(machine))
-                    print(stylize("Machine exists...", fg("green")))
 
                     # Machine pem
                     pem = machine['pem']
@@ -65,7 +64,11 @@ def push(machine, from_path, to_path):
                     # execute push command
                     push_command = ["scp", "-r", "-P", port, "-i", key_file, from_path, user + "@" + ip + ":" + to_path]
                     print("Executing " + stylize(" ".join(push_command), fg("blue")))
-                    subprocess.check_call(push_command)
+
+                    try:
+                        subprocess.check_call(push_command)
+                    except subprocess.CalledProcessError:
+                        pass
 
                 else:
                     print(stylize(machine + " is not a valid machine id.", fg("red")))

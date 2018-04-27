@@ -37,7 +37,7 @@ def ssh(machine):
                 # machine provided is one this user has access to
                 if data.get(machine):
                     gpu_mach = (data.get(machine))
-                    print(stylize("Machine exists. Connecting...", fg("green")))
+                    print(stylize("Connecting to your instance...", fg("green")))
 
                     # Machine pem
                     pem = gpu_mach['pem']
@@ -61,7 +61,10 @@ def ssh(machine):
                     # execute ssh command
                     ssh_command = ["ssh", user + "@" + ip, "-p", port, "-i", key_file]
                     print("Executing " + stylize(" ".join(ssh_command), fg("blue")))
-                    subprocess.check_call(ssh_command)
+                    try:
+                        subprocess.check_call(ssh_command)
+                    except subprocess.CalledProcessError:
+                        pass
 
                 else:
                     print(stylize(machine + " is not a valid machine id.", fg("red")))
