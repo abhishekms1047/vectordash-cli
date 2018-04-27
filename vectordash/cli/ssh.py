@@ -44,14 +44,14 @@ def ssh(machine):
 
                     # name for pem key file, formatted to be stored
                     machine_name = (gpu_mach['name'].lower()).replace(" ", "")
-                    key_file = dot_folder + machine_name + '-key.pem'
+                    key_file = os.path.expanduser(dot_folder + machine_name + '-key.pem')
 
                     # create new file ~/.vectordash/<key_file>.pem to write into
                     with open(key_file, "w") as h:
                         h.write(pem)
 
                     # give key file permissions for ssh
-                    os.chmod(key_file, 600)
+                    os.chmod(key_file, 0o600)
 
                     # Port, IP address, and user information for ssh command
                     port = str(gpu_mach['port'])
