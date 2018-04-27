@@ -19,60 +19,56 @@ def ssh(machine):
     """
     try:
         # retrieve the secret token from the config folder
-        root = str(os.path.expanduser("~"))
-        token = root + "/.vectordash/token"
+        dot_folder = os.path.expanduser('~/.vectordash/')
+        token = os.path.join(dot_folder, 'token')
 
         if os.path.isfile(token):
             with open(token) as f:
                 secret_token = f.readline()
 
-            try:
-                # API endpoint for machine information
-                full_url = API_URL + str(secret_token)
-                r = requests.get(full_url)
+            # API endpoint for machine information
+            full_url = API_URL + str(secret_token)
+            r = requests.get(full_url)
 
-                # API connection is successful, retrieve the JSON object
-                if r.status_code == 200:
-                    data = r.json()
+            # API connection is successful, retrieve the JSON object
+            if r.status_code == 200:
+                data = r.json()
 
-                    # machine provided is one this user has access to
-                    if data.get(machine):
-                        gpu_mach = (data.get(machine))
-                        print(stylize("Machine exists. Connecting...", fg("green")))
+                # machine provided is one this user has access to
+                if data.get(machine):
+                    gpu_mach = (data.get(machine))
+                    print(stylize("Machine exists. Connecting...", fg("green")))
 
-                        # Machine pem
-                        pem = gpu_mach['pem']
+                    # Machine pem
+                    pem = gpu_mach['pem']
 
-                        # name for pem key file, formatted to be stored
-                        machine_name = (gpu_mach['name'].lower()).replace(" ", "")
-                        key_file = root + "/.vectordash/" + machine_name + "-key.pem"
+                    # name for pem key file, formatted to be stored
+                    machine_name = (gpu_mach['name'].lower()).replace(" ", "")
+                    key_file = dot_folder + machine_name + '-key.pem'
 
-                        # create new file ~/.vectordash/<key_file>.pem to write into
-                        with open(key_file, "w") as h:
-                            h.write(pem)
+                    # create new file ~/.vectordash/<key_file>.pem to write into
+                    with open(key_file, "w") as h:
+                        h.write(pem)
 
-                        # give key file permissions for ssh
-                        os.chmod(key_file, 600)
+                    # give key file permissions for ssh
+                    os.chmod(key_file, 600)
 
-                        # Port, IP address, and user information for ssh command
-                        port = str(gpu_mach['port'])
-                        ip = str(gpu_mach['ip'])
-                        user = str(gpu_mach['user'])
+                    # Port, IP address, and user information for ssh command
+                    port = str(gpu_mach['port'])
+                    ip = str(gpu_mach['ip'])
+                    user = str(gpu_mach['user'])
 
-                        # execute ssh command
-                        ssh_command = ["ssh", user + "@" + ip, "-p", port, "-i", key_file]
-                        print("Executing " + stylize(" ".join(ssh_command), fg("blue")))
-                        subprocess.check_call(ssh_command)
-
-                    else:
-                        print(stylize(machine + " is not a valid machine id.", fg("red")))
-                        print("Please make sure you are connecting to a valid machine")
+                    # execute ssh command
+                    ssh_command = ["ssh", user + "@" + ip, "-p", port, "-i", key_file]
+                    print("Executing " + stylize(" ".join(ssh_command), fg("blue")))
+                    subprocess.check_call(ssh_command)
 
                 else:
-                    print(stylize("Could not connect to vectordash API with provided token", fg("red")))
+                    print(stylize(machine + " is not a valid machine id.", fg("red")))
+                    print("Please make sure you are connecting to a valid machine")
 
-            except json.decoder.JSONDecodeError:
-                print(stylize("Invalid token value", fg("red")))
+            else:
+                print(stylize("Could not connect to vectordash API with provided token", fg("red")))
 
         else:
             # If token is not stored, the command will not execute

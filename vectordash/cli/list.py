@@ -16,34 +16,30 @@ def list():
 
     """
     try:
-        filename = os.path.expanduser('~/.vectordash/token')
+        token = os.path.expanduser('~/.vectordash/token')
 
-        if os.path.isfile(filename):
-            with open(filename) as f:
+        if os.path.isfile(token):
+            with open(token) as f:
                 secret_token = f.readline()
                 full_url = API_URL + str(secret_token)
 
-            try:
-                r = requests.get(full_url)
+            r = requests.get(full_url)
 
-                if r.status_code == 200:
-                    data = r.json()
+            if r.status_code == 200:
+                data = r.json()
 
-                    if len(data) > 0:
-                        green_bolded = fg("green") + attr("bold")
-                        print("Your Vectordash machines:")
-                        for key, value in data.items():
-                            pretty_id = stylize("[" + str(key) + "]", green_bolded)
-                            machine = str(pretty_id) + " " + str(value['name'])
-                            print(machine)
-                    else:
-                        vd = stylize(VECTORDASH_URL, fg("blue"))
-                        print("You are not currently renting any machines. Go to " + vd + " to browse GPUs.")
+                if len(data) > 0:
+                    green_bolded = fg("green") + attr("bold")
+                    print("Your Vectordash machines:")
+                    for key, value in data.items():
+                        pretty_id = stylize("[" + str(key) + "]", green_bolded)
+                        machine = str(pretty_id) + " " + str(value['name'])
+                        print(machine)
                 else:
-                    print(stylize("Could not connect to Vectordash API with provided token", fg("red")))
-
-            except json.decoder.JSONDecodeError:
-                print(stylize("Invalid token value", fg("red")))
+                    vd = stylize(VECTORDASH_URL, fg("blue"))
+                    print("You are not currently renting any machines. Go to " + vd + " to browse GPUs.")
+            else:
+                print(stylize("Could not connect to Vectordash API with provided token", fg("red")))
 
         else:
             print(stylize("Unable to locate token. Please make sure a valid token is stored.", fg("red")))
