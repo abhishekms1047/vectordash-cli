@@ -37,7 +37,7 @@ def list():
                         print(machine)
                 else:
                     vd = stylize(VECTORDASH_URL, fg("blue"))
-                    print("You are not currently renting any machines. Go to " + vd + " to browse GPUs.")
+                    print("You are not currently renting any machines. Go to " + vd + "create/ to start an instance.")
             else:
                 print(stylize("Could not connect to Vectordash API with provided token", fg("red")))
 

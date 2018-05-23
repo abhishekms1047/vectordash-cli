@@ -50,7 +50,7 @@ def pull(machine, from_path, to_path):
                     key_file = os.path.expanduser(dot_folder + machine_name + '-key.pem')
 
                     # create new file ~/.vectordash/<key_file>.pem to write into
-                    with open(key_file, "w") as h:
+                    with open(key_filwe, "w") as h:
                         h.write(pem)
 
                     # give key file permissions for scp
@@ -68,7 +68,7 @@ def pull(machine, from_path, to_path):
                     try:
                         subprocess.check_call(pull_command)
                     except subprocess.CalledProcessError:
-                        print("Your instance is initializing. Please wait a few seconds")
+                        print("Your instance is configuring. Please wait a few seconds!")
                         pass
 
                 else:

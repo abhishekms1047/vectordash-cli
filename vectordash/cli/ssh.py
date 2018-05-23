@@ -64,7 +64,7 @@ def ssh(machine):
                     try:
                         subprocess.check_call(ssh_command)
                     except subprocess.CalledProcessError:
-                        print("Your instance is initializing. Please wait a few seconds")
+                        print("Your instance is configuring. Please wait a few seconds!")
                         pass
 
                 else:
