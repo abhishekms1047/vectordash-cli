@@ -16,12 +16,9 @@ def cli():
     pass
 
 
-def add_commands(cli):
-    cli.add_command(list)
-    cli.add_command(secret)
-    cli.add_command(ssh)
-    cli.add_command(push)
-    cli.add_command(pull)
-
-
-add_commands(cli)
+# adding the commands
+cli.add_command(list)
+cli.add_command(secret)
+cli.add_command(ssh)
+cli.add_command(push)
+cli.add_command(pull)

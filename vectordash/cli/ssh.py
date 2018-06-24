@@ -5,8 +5,14 @@ import os
 import subprocess
 from colored import fg
 from colored import stylize
+from os import environ
 
-from vectordash import API_URL, TOKEN_URL
+
+# getting the base API URL
+if environ.get('VECTORDASH_BASE_URL'):
+    VECTORDASH_URL = environ.get('VECTORDASH_BASE_URL')
+else:
+    VECTORDASH_URL = "http://vectordash.com/"
 
 
 @click.command()
@@ -27,7 +33,7 @@ def ssh(machine):
                 secret_token = f.readline()
 
             # API endpoint for machine information
-            full_url = API_URL + str(secret_token)
+            full_url = VECTORDASH_URL + "api/list_machines/" + str(secret_token)
             r = requests.get(full_url)
 
             # API connection is successful, retrieve the JSON object
@@ -37,7 +43,6 @@ def ssh(machine):
                 # machine provided is one this user has access to
                 if data.get(machine):
                     gpu_mach = (data.get(machine))
-                    print(stylize("Connecting to your instance...", fg("green")))
 
                     # Machine pem
                     pem = gpu_mach['pem']
@@ -78,7 +83,7 @@ def ssh(machine):
             # If token is not stored, the command will not execute
             print(stylize("Unable to connect with stored token. Please make sure a valid token is stored.", fg("red")))
             print("Run " + stylize("vectordash secret <token>", fg("blue")))
-            print("Your token can be found at " + stylize(str(TOKEN_URL), fg("blue")))
+            print("Your token can be found at " + stylize("https://vectordash.com/edit/verification/", fg("blue")))
 
     except TypeError:
         type_err = "There was a problem with ssh. Please ensure your command is of the format "

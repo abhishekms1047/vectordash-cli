@@ -2,18 +2,23 @@ import click
 import requests
 import json
 import os
+from os import environ
 from colored import fg
 from colored import stylize
 from colored import attr
 
-from vectordash import API_URL, TOKEN_URL, VECTORDASH_URL
+
+# getting the base API URL
+if environ.get('VECTORDASH_BASE_URL'):
+    VECTORDASH_URL = environ.get('VECTORDASH_BASE_URL')
+else:
+    VECTORDASH_URL = "http://vectordash.com/"
+
 
 @click.command()
 def list():
     """
-    args: None
-    Displays the list of machines that user is currently renting
-
+    Lists your active GPU instances.
     """
     try:
         token = os.path.expanduser('~/.vectordash/token')
@@ -21,7 +26,9 @@ def list():
         if os.path.isfile(token):
             with open(token) as f:
                 secret_token = f.readline()
-                full_url = API_URL + str(secret_token)
+
+                # building the full URL
+                full_url = VECTORDASH_URL + "api/list_machines/" + str(secret_token)
 
             r = requests.get(full_url)
 
@@ -34,17 +41,22 @@ def list():
                     for key, value in data.items():
                         pretty_id = stylize("[" + str(key) + "]", green_bolded)
                         machine = str(pretty_id) + " " + str(value['name'])
+
+                        # if the machine is not ready yet
+                        if not value['ready']:
+                            machine = machine + " (starting instance...)"
+
                         print(machine)
                 else:
-                    vd = stylize(VECTORDASH_URL, fg("blue"))
-                    print("You are not currently renting any machines. Go to " + vd + "create/ to start an instance.")
+                    vd = stylize(VECTORDASH_URL + "create/", fg("blue"))
+                    print("You currently haven no instances. Go to " + vd + " to start an instance.")
             else:
-                print(stylize("Could not connect to Vectordash API with provided token", fg("red")))
+                print(stylize("Invalid token. Please enter a valid token.", fg("red")))
 
         else:
             print(stylize("Unable to locate token. Please make sure a valid token is stored.", fg("red")))
             print("Run " + stylize("vectordash secret <token>", fg("blue")))
-            print("Your token can be found at " + stylize(str(TOKEN_URL), fg("blue")))
+            print("Your token can be found at " + stylize("https://vectordash.com/edit/verification", fg("blue")))
 
     except TypeError:
         type_err = "Please make sure a valid token is stored. Run "

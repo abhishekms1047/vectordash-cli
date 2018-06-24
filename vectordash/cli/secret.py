@@ -4,6 +4,7 @@ from colored import fg
 from colored import stylize
 
 
+
 @click.command()
 @click.argument('token', required=True, nargs=1)
 def secret(token):

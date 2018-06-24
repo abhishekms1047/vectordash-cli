@@ -5,8 +5,13 @@ import os
 import subprocess
 from colored import fg
 from colored import stylize
+from os import environ
 
-from vectordash import API_URL, TOKEN_URL
+# getting the base API URL
+if environ.get('VECTORDASH_BASE_URL'):
+    VECTORDASH_URL = environ.get('VECTORDASH_BASE_URL')
+else:
+    VECTORDASH_URL = "http://vectordash.com/"
 
 
 @click.command()
@@ -31,7 +36,7 @@ def push(machine, from_path, to_path):
                 secret_token = f.readline()
 
             # API endpoint for machine information
-            full_url = API_URL + str(secret_token)
+            full_url = VECTORDASH_URL + "api/list_machines/" + str(secret_token)
             r = requests.get(full_url)
 
             # API connection is successful, retrieve the JSON object

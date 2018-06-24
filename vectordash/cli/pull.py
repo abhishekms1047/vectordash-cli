@@ -5,8 +5,13 @@ import os
 import subprocess
 from colored import fg
 from colored import stylize
+from os import environ
 
-from vectordash import API_URL, TOKEN_URL
+# getting the base API URL
+if environ.get('VECTORDASH_BASE_URL'):
+    VECTORDASH_URL = environ.get('VECTORDASH_BASE_URL')
+else:
+    VECTORDASH_URL = "http://vectordash.com/"
 
 
 @click.command()
@@ -50,7 +55,7 @@ def pull(machine, from_path, to_path):
                     key_file = os.path.expanduser(dot_folder + machine_name + '-key.pem')
 
                     # create new file ~/.vectordash/<key_file>.pem to write into
-                    with open(key_filwe, "w") as h:
+                    with open(key_file, "w") as h:
                         h.write(pem)
 
                     # give key file permissions for scp

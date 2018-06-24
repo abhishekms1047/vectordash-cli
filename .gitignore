@@ -5,6 +5,8 @@ __pycache__/
 
 .idea/
 
+publish.sh
+
 # C extensions
 *.so
 
