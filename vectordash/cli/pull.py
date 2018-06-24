@@ -36,7 +36,7 @@ def pull(machine, from_path, to_path):
                 secret_token = f.readline()
 
             # API endpoint for machine information
-            full_url = API_URL + str(secret_token)
+            full_url = VECTORDASH_URL + "api/list_machines/" + str(secret_token)
             r = requests.get(full_url)
 
             # API connection is successful, retrieve the JSON object
@@ -68,12 +68,10 @@ def pull(machine, from_path, to_path):
 
                     # execute pull command
                     pull_command = ["scp", "-r", "-P", port, "-i", key_file, user + "@" + ip + ":" + from_path, to_path]
-                    print("Executing " + stylize(" ".join(pull_command), fg("blue")))
 
                     try:
                         subprocess.check_call(pull_command)
                     except subprocess.CalledProcessError:
-                        print("Your instance is configuring. Please wait a few seconds!")
                         pass
 
                 else:

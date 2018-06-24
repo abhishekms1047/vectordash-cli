@@ -68,12 +68,10 @@ def push(machine, from_path, to_path):
 
                     # execute push command
                     push_command = ["scp", "-r", "-P", port, "-i", key_file, from_path, user + "@" + ip + ":" + to_path]
-                    print("Executing " + stylize(" ".join(push_command), fg("blue")))
 
                     try:
                         subprocess.check_call(push_command)
                     except subprocess.CalledProcessError:
-                        print("Your instance is configuring. Please wait a few seconds!")
                         pass
 
                 else:

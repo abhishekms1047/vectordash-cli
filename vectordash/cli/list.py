@@ -11,6 +11,7 @@ from colored import attr
 # getting the base API URL
 if environ.get('VECTORDASH_BASE_URL'):
     VECTORDASH_URL = environ.get('VECTORDASH_BASE_URL')
+    print("Using development URL: {}".format(VECTORDASH_URL))
 else:
     VECTORDASH_URL = "http://vectordash.com/"
 
@@ -44,7 +45,7 @@ def list():
 
                         # if the machine is not ready yet
                         if not value['ready']:
-                            machine = machine + " (starting instance...)"
+                            machine = machine + " (starting)"
 
                         print(machine)
                 else:

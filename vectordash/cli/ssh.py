@@ -65,11 +65,9 @@ def ssh(machine):
 
                     # execute ssh command
                     ssh_command = ["ssh", user + "@" + ip, "-p", port, "-i", key_file]
-                    print("Executing " + stylize(" ".join(ssh_command), fg("blue")))
                     try:
                         subprocess.check_call(ssh_command)
                     except subprocess.CalledProcessError:
-                        print("Your instance is configuring. Please wait a few seconds!")
                         pass
 
                 else:
