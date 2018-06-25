@@ -25,7 +25,7 @@ def list():
         token = os.path.expanduser('~/.vectordash/token')
 
         if os.path.isfile(token):
-            with open(token) as f:
+            with open(token, 'r') as f:
                 secret_token = f.readline()
 
                 # building the full URL

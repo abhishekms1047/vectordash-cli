@@ -1,7 +1,7 @@
 import click
 import requests
 import paramiko
-import json
+import uuid
 import os
 import subprocess
 from colored import fg
@@ -30,7 +30,7 @@ def jupyter(machine):
         token = os.path.join(dot_folder, 'token')
 
         if os.path.isfile(token):
-            with open(token) as f:
+            with open(token, 'r') as f:
                 secret_token = f.readline()
 
             # API endpoint for machine information
@@ -56,10 +56,10 @@ def jupyter(machine):
                     with open(key_file, "w") as h:
                         h.write(pem)
 
-                    # give key file permissions for ssh
+                    # give key file permissions for jupyter
                     os.chmod(key_file, 0o600)
 
-                    # Port, IP address, and user information for ssh command
+                    # Port, IP address, and user information for jupyter command
                     port = str(gpu_mach['port'])
                     ip = str(gpu_mach['ip'])
                     user = str(gpu_mach['user'])
@@ -74,23 +74,25 @@ def jupyter(machine):
                                 username=user,
                                 key_filename=key_file)
 
-                    # remove user's home directory
-                    cmd = 'jupyter notebook --no-browser --port=8889'
+                    # Serve Jupyter from remote location
+                    jupyter_token = str(uuid.uuid4().hex)
+                    ssh.exec_command('tmux')
+                    cmd = 'jupyter notebook --no-browser --port=8889 --NotebookApp.token=' + jupyter_token + ' &'
                     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd)
                     outlines = ssh_stdout.readlines()
                     resp = ''.join(outlines)
-                    print(resp)
-
+                    # print(resp)
+                    ssh.exec_command('tmux detach')
                     ssh.close()
 
                     # execute ssh command
                     jupyter_command = ["ssh", "-i", key_file, "-N", "-f", "-L", "localhost:8890:localhost:8889",
                                        user + "@" + ip, "-p", port]
                     try:
-                        subprocess.check_call(jupyter_command)
+                        subprocess.call(jupyter_command)
                         print(stylize("To access your jupyter notebook, please open the following URL in your browser:",
                                       fg("green")))
-                        print(stylize("http://localhost:8890/?token=54d74475007058a1d3609066ca0c6f2fef52c46c517dd85f&token=54d74475007058a1d3609066ca0c6f2fef52c46c517dd85f", fg("green")))
+                        print("http://localhost:8890/?token=" + jupyter_token)
                     except subprocess.CalledProcessError:
                         pass
 
@@ -108,5 +110,5 @@ def jupyter(machine):
             print("Your token can be found at " + stylize("https://vectordash.com/edit/verification/", fg("blue")))
 
     except TypeError:
-        type_err = "There was a problem with ssh. Please ensure your command is of the format "
-        print(type_err + stylize("vectordash ssh <id>", fg("blue")))
+        type_err = "There was a problem with entry. Please ensure your command is of the format "
+        print(type_err + stylize("vectordash jupyter <id>", fg("blue")))
