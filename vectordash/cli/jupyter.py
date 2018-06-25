@@ -15,12 +15,12 @@ else:
     VECTORDASH_URL = "http://vectordash.com/"
 
 
-@click.command(name='ssh')
+@click.command(name='jupyter')
 @click.argument('machine', required=True, nargs=1)
-def ssh(machine):
+def jupyter(machine):
     """
     args: <machine>
-    Runs an ssh command to the machine to allow user to connect.
+    Creates a reverse SSH tunnel to allow you to work on a remote jupyter notebook locally
 
     """
     try:

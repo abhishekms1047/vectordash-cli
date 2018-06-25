@@ -43,8 +43,12 @@ def list():
                         pretty_id = stylize("[" + str(key) + "]", green_bolded)
                         machine = str(pretty_id) + " " + str(value['name'])
 
+                        # if an error has occurred, we display an error
+                        if value['error_occurred']:
+                            machine = machine + stylize(" (unexpected error)", fg("red"))
+
                         # if the machine is not ready yet
-                        if not value['ready']:
+                        elif not value['ready']:
                             machine = machine + " (starting)"
 
                         print(machine)
