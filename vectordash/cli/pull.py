@@ -14,7 +14,7 @@ else:
     VECTORDASH_URL = "http://vectordash.com/"
 
 
-@click.command()
+@click.command(name='pull')
 @click.argument('machine', required=True, nargs=1)
 @click.argument('from_path', required=True, nargs=1)
 @click.argument('to_path', required=False, default='.', nargs=1, type=click.Path())

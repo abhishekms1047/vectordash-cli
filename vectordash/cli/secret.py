@@ -5,7 +5,7 @@ from colored import stylize
 
 
 
-@click.command()
+@click.command(name='secret')
 @click.argument('token', required=True, nargs=1)
 def secret(token):
     """
