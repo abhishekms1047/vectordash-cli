@@ -45,7 +45,7 @@ def list():
 
                         # if an error has occurred, we display an error
                         if value['error_occurred']:
-                            machine = machine + stylize(" (starting)", fg("red"))
+                            machine = machine + stylize(" (unexpected error)", fg("red"))
 
                         # if the machine is not ready yet
                         elif not value['ready']:
