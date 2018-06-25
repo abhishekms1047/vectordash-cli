@@ -38,7 +38,7 @@ def list():
 
                 if len(data) > 0:
                     green_bolded = fg("green") + attr("bold")
-                    print("Your Vectordash machines:")
+                    print("Your Vectordash instances:")
                     for key, value in data.items():
                         pretty_id = stylize("[" + str(key) + "]", green_bolded)
                         machine = str(pretty_id) + " " + str(value['name'])
