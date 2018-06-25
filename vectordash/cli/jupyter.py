@@ -21,7 +21,7 @@ else:
 def jupyter(machine):
     """
     args: <machine>
-    Creates a reverse SSH tunnel to allow you to work on a remote jupyter notebook locally
+    Creates a reverse SSH tunnel to allow you to work on a remote jupyter notebook in a local browser
 
     """
     try:
@@ -78,13 +78,12 @@ def jupyter(machine):
                     cmd = 'jupyter notebook --no-browser --port=8889'
                     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd)
                     outlines = ssh_stdout.readlines()
-                    print(outlines)
                     resp = ''.join(outlines)
+                    print(resp)
 
                     ssh.close()
 
                     # execute ssh command
-                    # ssh -i ~/.vectordash/some-key.pem -N -f -L localhost:8888:localhost:8889 user@ip -p port
                     jupyter_command = ["ssh", "-i", key_file, "-N", "-f", "-L", "localhost:8890:localhost:8889",
                                        user + "@" + ip, "-p", port]
                     try:
