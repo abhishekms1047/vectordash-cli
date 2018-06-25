@@ -3,7 +3,7 @@ import os
 from setuptools import find_packages, setup
 
 project = "vectordash"
-version = "1.4"
+version = "1.4.1"
 
 with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
     long_description = readme.read()
@@ -23,7 +23,8 @@ setup(
     install_requires=[
         "click>=6.7,<7",
         "requests>=2.18.4",
-        "colored>=1.3.5",
+        "colored==1.3.5",
+        "paramiko==2.4.1",
     ],
     setup_requires=[],
     dependency_links=[],

@@ -1,5 +1,6 @@
 import click
 import requests
+import paramiko
 import json
 import os
 import subprocess
@@ -63,10 +64,34 @@ def jupyter(machine):
                     ip = str(gpu_mach['ip'])
                     user = str(gpu_mach['user'])
 
+                    ssh = paramiko.SSHClient()
+
+                    # adding the hostkeys automatically
+                    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+                    ssh.connect(hostname=ip,
+                                port=int(port),
+                                username=user,
+                                key_filename=key_file)
+
+                    # remove user's home directory
+                    cmd = 'jupyter notebook --no-browser --port=8889'
+                    ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd)
+                    outlines = ssh_stdout.readlines()
+                    print(outlines)
+                    resp = ''.join(outlines)
+
+                    ssh.close()
+
                     # execute ssh command
-                    ssh_command = ["ssh", user + "@" + ip, "-p", port, "-i", key_file]
+                    # ssh -i ~/.vectordash/some-key.pem -N -f -L localhost:8888:localhost:8889 user@ip -p port
+                    jupyter_command = ["ssh", "-i", key_file, "-N", "-f", "-L", "localhost:8890:localhost:8889",
+                                       user + "@" + ip, "-p", port]
                     try:
-                        subprocess.check_call(ssh_command)
+                        subprocess.check_call(jupyter_command)
+                        print(stylize("To access your jupyter notebook, please open the following URL in your browser:",
+                                      fg("green")))
+                        print(stylize("http://localhost:8890/?token=54d74475007058a1d3609066ca0c6f2fef52c46c517dd85f&token=54d74475007058a1d3609066ca0c6f2fef52c46c517dd85f", fg("green")))
                     except subprocess.CalledProcessError:
                         pass
 

@@ -16,7 +16,7 @@ else:
     VECTORDASH_URL = "http://vectordash.com/"
 
 
-@click.command()
+@click.command(name='list')
 def list():
     """
     Lists your active GPU instances.
