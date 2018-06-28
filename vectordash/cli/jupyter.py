@@ -80,11 +80,12 @@ def jupyter(machine):
                     jupyter_token = str(uuid.uuid4().hex)
 
                     # Serve Jupyter from REMOTE location
-                    cmd = 'jupyter notebook --no-browser --port=8889 --NotebookApp.token={} > /dev/null 2>&1 & disown'.format(jupyter_token)
+                    cmd = 'echo $$; jupyter notebook --no-browser --port=8889 --NotebookApp.token={} > /dev/null 2>&1 & disown'.format(jupyter_token)
                     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd)
 
                     # Retrieve pid process of jupyter server command above
-                    # pid = int(ssh_stdout.readline())
+                    pid = int(ssh_stdout.readline())
+                    print("Pid: " + str(pid))
 
                     # Jupyter localhost port forwarding command on LOCAL machine, will run in foreground
                     jupyter_cmd = ['ssh', '-i', key_file, '-N', '-L', 'localhost:8890:localhost:8889',
@@ -104,15 +105,15 @@ def jupyter(machine):
 
                     except KeyboardInterrupt:
                         # On KeyboardInterrupt (CTRL + C), kill both remote and local jupyter processes
-                        answer = input("Are you sure you want to close the jupyter server? [Yes|No]")
-                        if "y" not in answer or "Y" not in answer:
+                        answer = input("Are you sure you want to close the jupyter server? [Yes|No] ")
+                        if "y" not in answer and "Y" not in answer:
                             pass
 
                         else:
                             # Send kill command
-                            cmd = 'kill -9 ' + str(pid)
-                            kill_stdin, kill_stdout, kill_stderr = ssh.exec_command(cmd)
-                            print("Killed")
+                            kill_cmd = 'kill -9 ' + str(pid)
+                            kill_stdin, kill_stdout, kill_stderr = ssh.exec_command(kill_cmd)
+                            print("Killed.")
 
                     # Close remote connection
                     ssh.close()
