@@ -3,7 +3,7 @@ import os
 from setuptools import find_packages, setup
 
 project = "vectordash"
-version = "1.7.8"
+version = "1.7.9"
 
 with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
     long_description = readme.read()
