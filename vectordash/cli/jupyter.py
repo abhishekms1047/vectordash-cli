@@ -4,10 +4,10 @@ import uuid
 import os
 import subprocess
 import paramiko
+import random
 from colored import fg
 from colored import stylize
 from os import environ
-
 
 # getting the base API URL
 if environ.get('VECTORDASH_BASE_URL'):
@@ -79,8 +79,34 @@ def jupyter(machine):
                     # Token generation for jupyter server
                     jupyter_token = str(uuid.uuid4().hex)
 
+
+                    #remote_port = 8889
+                    #local_port = 8890
+                    
+                    # grab a remote port that isn't being used
+                    remote_port = None
+                    while remote_port is None:
+                        try_port = random.randint(1024, 49152)
+                        cmd = 'lsof -i :{}'.format(try_port)
+                        ssh_stdin, ssh_stdout, ssh_stderr = ssh.command(cmd)
+                        if ssh_stdout.readline() == "":
+                            remote_port = try_port
+                            break
+                
+                    # grab a local port that isn't being used
+                    local_port = None
+                    while local_port is None:
+                        try_port = random.randint(1024, 49152)
+                        cmd = ['lsof', '-i', ':{}'.format(try_port)]
+                        res = subprocess.check_output(cmd)
+                        if res == "":
+                            local_port = try_port
+                            break                    
+
+    
                     # Serve Jupyter from REMOTE location
-                    cmd = 'jupyter notebook --no-browser --port=8889 --NotebookApp.token={} > /dev/null 2>&1 & disown'.format(jupyter_token)
+                    # remote port (container)
+                    cmd = 'jupyter notebook --no-browser --port={} --NotebookApp.token={} > /dev/null 2>&1 & disown'.format(remote_port, jupyter_token)
                     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd)
 
                     # Retrieve pid process of jupyter server command above
@@ -88,7 +114,8 @@ def jupyter(machine):
                     #print("Pid: " + str(pid))
 
                     # Jupyter localhost port forwarding command on LOCAL machine, will run in foreground
-                    jupyter_cmd = ['ssh', '-i', key_file, '-N', '-L', 'localhost:8890:localhost:8889',
+                    # first port is local port (guest machine), second port is remote port (container)
+                    jupyter_cmd = ['ssh', '-i', key_file, '-N', '-L', 'localhost:{}:localhost:{}'.format(local_port, remote_port),
                                    '{}@{}'.format(user, ip), '-p', port]
 
                     try:
@@ -111,7 +138,7 @@ def jupyter(machine):
 
                         else:
                             # Send kill command
-                            kill_cmd = "ps -ef | grep jupyter | grep -v grep | awk '{print $2}' | xargs kill"
+                            kill_cmd = "ps -ef | grep {} | grep -v grep | awk '{print $2}' | xargs kill".format(jupyter_token)
                             kill_stdin, kill_stdout, kill_stderr = ssh.exec_command(kill_cmd)
                             print("Killed.")
 
