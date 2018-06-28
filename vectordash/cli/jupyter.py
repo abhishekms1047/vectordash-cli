@@ -88,7 +88,7 @@ def jupyter(machine):
                     while remote_port is None:
                         try_port = random.randint(1024, 49152)
                         cmd = 'lsof -i :{}'.format(try_port)
-                        ssh_stdin, ssh_stdout, ssh_stderr = ssh.command(cmd)
+                        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd)
                         if ssh_stdout.readline() == "":
                             remote_port = try_port
                             break
