@@ -80,12 +80,12 @@ def jupyter(machine):
                     jupyter_token = str(uuid.uuid4().hex)
 
                     # Serve Jupyter from REMOTE location
-                    cmd = 'echo $$; jupyter notebook --no-browser --port=8889 --NotebookApp.token={} > /dev/null 2>&1 & disown'.format(jupyter_token)
+                    cmd = 'jupyter notebook --no-browser --port=8889 --NotebookApp.token={} > /dev/null 2>&1 & disown'.format(jupyter_token)
                     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd)
 
                     # Retrieve pid process of jupyter server command above
-                    pid = int(ssh_stdout.readline())
-                    print("Pid: " + str(pid))
+                    #pid = int(ssh_stdout.readline())
+                    #print("Pid: " + str(pid))
 
                     # Jupyter localhost port forwarding command on LOCAL machine, will run in foreground
                     jupyter_cmd = ['ssh', '-i', key_file, '-N', '-L', 'localhost:8890:localhost:8889',
@@ -111,7 +111,7 @@ def jupyter(machine):
 
                         else:
                             # Send kill command
-                            kill_cmd = 'kill -9 ' + str(pid)
+                            kill_cmd = "ps -ef | grep jupyter | grep -v grep | awk '{print $2}' | xargs kill"
                             kill_stdin, kill_stdout, kill_stderr = ssh.exec_command(kill_cmd)
                             print("Killed.")
 
