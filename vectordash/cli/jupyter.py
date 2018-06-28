@@ -20,8 +20,8 @@ else:
 @click.argument('machine', required=True, nargs=1)
 def jupyter(machine):
     """
-    args: <machine>
-    Creates a reverse SSH tunnel to allow you to work on a remote jupyter notebook in a local browser
+    args: <machine> |
+    Starts a Jupyter server on an instance.
 
     """
     try:
@@ -110,5 +110,5 @@ def jupyter(machine):
             print("Your token can be found at " + stylize("https://vectordash.com/edit/verification/", fg("blue")))
 
     except TypeError:
-        type_err = "There was a problem with entry. Please ensure your command is of the format "
+        type_err = "An error has occurred. Please ensure your command is of the format "
         print(type_err + stylize("vectordash jupyter <id>", fg("blue")))
