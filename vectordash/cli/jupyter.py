@@ -98,8 +98,8 @@ def jupyter(machine):
                     while local_port is None:
                         try_port = random.randint(1024, 49152)
                         cmd = ['lsof', '-i', ':{}'.format(try_port)]
-                        res = subprocess.check_output(cmd)
-                        if res == "":
+                        res = subprocess.call(cmd)
+                        if res != 0:
                             local_port = try_port
                             break                    
 
