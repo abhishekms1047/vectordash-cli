@@ -79,7 +79,6 @@ def jupyter(machine):
                     # Token generation for jupyter server
                     jupyter_token = str(uuid.uuid4().hex)
 
-
                     #remote_port = 8889
                     #local_port = 8890
                     
@@ -103,15 +102,10 @@ def jupyter(machine):
                             local_port = try_port
                             break                    
 
-    
                     # Serve Jupyter from REMOTE location
                     # remote port (container)
                     cmd = 'jupyter notebook --no-browser --port={} --NotebookApp.token={} > /dev/null 2>&1 & disown'.format(remote_port, jupyter_token)
                     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd)
-
-                    # Retrieve pid process of jupyter server command above
-                    #pid = int(ssh_stdout.readline())
-                    #print("Pid: " + str(pid))
 
                     # Jupyter localhost port forwarding command on LOCAL machine, will run in foreground
                     # first port is local port (guest machine), second port is remote port (container)
@@ -121,8 +115,8 @@ def jupyter(machine):
                     try:
                         # Instructions and URL for browser to open up jupyter notebook
                         print(stylize("To access your jupyter notebook, open this URL in your browser:", fg("green")))
-                        print(stylize("http://localhost:8890/?token=" + jupyter_token, fg("green")))
-                        print("To close the notebook server, hold CTRL + C")
+                        print(stylize("http://localhost:{}/?token={}".format(local_port, jupyter_token), fg("green")))
+                        print("To close the notebook server, press CTRL + C")
 
                         # Start local port forwarding
                         subprocess.call(jupyter_cmd)
@@ -132,15 +126,9 @@ def jupyter(machine):
 
                     except KeyboardInterrupt:
                         # On KeyboardInterrupt (CTRL + C), kill both remote and local jupyter processes
-                        answer = input("Are you sure you want to close the jupyter server? [Yes|No] ")
-                        if "y" not in answer and "Y" not in answer:
-                            pass
-
-                        else:
-                            # Send kill command
-                            kill_cmd = "ps -ef | grep {} | grep -v grep | awk '{print $2}' | xargs kill".format(jupyter_token)
-                            kill_stdin, kill_stdout, kill_stderr = ssh.exec_command(kill_cmd)
-                            print("Killed.")
+                        kill_cmd = "ps -ef | grep {} | grep -v grep | awk '{{print $2}}' | xargs kill".format(jupyter_token)
+                        kill_stdin, kill_stdout, kill_stderr = ssh.exec_command(kill_cmd)
+                        print("Killed.")
 
                     # Close remote connection
                     ssh.close()
