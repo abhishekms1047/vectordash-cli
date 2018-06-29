@@ -126,9 +126,10 @@ def jupyter(machine):
 
                     except KeyboardInterrupt:
                         # On KeyboardInterrupt (CTRL + C), kill both remote and local jupyter processes
-                        #kill_cmd = "ps -ef | grep {} | grep -v grep | awk '{{print $2}}' | xargs kill".format(jupyter_token)
-                        kill_cmd = "jupyter notebook stop {}".format(remote_port)
+                        kill_cmd = "ps -ef | grep {} | grep -v grep | awk '{{print $2}}' | xargs kill".format(jupyter_token)
                         kill_stdin, kill_stdout, kill_stderr = ssh.exec_command(kill_cmd)
+                        reset_cmd = "rm -r /home/ubuntu/.ipython"
+                        reset_stdin, reset_stdout, reset_stderr = ssh.exec_command(reset_cmd)
                         print("Killed.")
 
                     # Close remote connection
