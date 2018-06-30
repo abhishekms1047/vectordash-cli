@@ -104,7 +104,9 @@ def jupyter(machine):
 
                     # Serve Jupyter from REMOTE location
                     # remote port (container)
-                    cmd = 'jupyter notebook --no-browser --port={} --NotebookApp.token={} > /dev/null 2>&1 & disown'.format(remote_port, jupyter_token)
+                    # make sure to first set path variables by sourcing bash_profile
+                    cmd = 'source /home/{}/.bash_profile; '.format(user)
+                    cmd += 'jupyter notebook --no-browser --port={} --NotebookApp.token={} > /dev/null 2>&1 & disown'.format(remote_port, jupyter_token)
                     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd)
 
                     # Jupyter localhost port forwarding command on LOCAL machine, will run in foreground
