@@ -13,7 +13,7 @@ if environ.get('VECTORDASH_BASE_URL'):
     VECTORDASH_URL = environ.get('VECTORDASH_BASE_URL')
     print("Using development URL: {}".format(VECTORDASH_URL))
 else:
-    VECTORDASH_URL = "http://vectordash.com/"
+    VECTORDASH_URL = "https://vectordash.com/"
 
 
 @click.command(name='list')
