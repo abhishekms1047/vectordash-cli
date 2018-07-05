@@ -35,7 +35,6 @@ def list():
 
             if r.status_code == 200:
                 data = r.json()
-                print(data)
 
                 if len(data) > 0:
                     green_bolded = fg("green") + attr("bold")
