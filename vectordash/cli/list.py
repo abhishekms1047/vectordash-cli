@@ -35,23 +35,29 @@ def list():
 
             if r.status_code == 200:
                 data = r.json()
+                print(data)
 
                 if len(data) > 0:
                     green_bolded = fg("green") + attr("bold")
                     print("Your Vectordash machines:")
-                    for key, value in data.items():
-                        pretty_id = stylize("[" + str(key) + "]", green_bolded)
-                        machine = str(pretty_id) + " " + str(value['name'])
+                    for i in range(len(data)):
+
+                        # getting the machine dict (we add one since we don't zero index the list we print out)
+                        machine = data[str(i + 1)]
+                        pretty_id = stylize("[" + str(i + 1) + "]", green_bolded)
+
+                        # building the string to print out
+                        machine_string = str(pretty_id) + " " + str(machine['name'])
 
                         # if an error has occurred, we display an error
-                        if value['error_occurred']:
-                            machine = machine + stylize(" (unexpected error)", fg("red"))
+                        if machine['error_occurred']:
+                            machine_string = machine_string + stylize(" (unexpected error)", fg("red"))
 
                         # if the machine is not ready yet
-                        elif not value['ready']:
-                            machine = machine + " (starting)"
+                        elif not machine['ready']:
+                            machine_string = machine_string + " (starting)"
 
-                        print(machine)
+                        print(machine_string)
                 else:
                     vd = stylize(VECTORDASH_URL + "create/", fg("blue"))
                     print("You currently haven no instances. Go to " + vd + " to start an instance.")
@@ -66,3 +72,5 @@ def list():
     except TypeError:
         type_err = "Please make sure a valid token is stored. Run "
         print(type_err + stylize("vectordash secret <token>", fg("blue")))
+
+list()
