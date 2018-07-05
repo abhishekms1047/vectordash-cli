@@ -72,5 +72,3 @@ def list():
     except TypeError:
         type_err = "Please make sure a valid token is stored. Run "
         print(type_err + stylize("vectordash secret <token>", fg("blue")))
-
-list()
