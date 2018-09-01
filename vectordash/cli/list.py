@@ -38,7 +38,7 @@ def list():
 
                 if len(data) > 0:
                     green_bolded = fg("green") + attr("bold")
-                    print("Your Vectordash machines:")
+                    print("Your Vectordash instances:")
                     for i in range(len(data)):
 
                         # getting the machine dict (we add one since we don't zero index the list we print out)
@@ -59,7 +59,7 @@ def list():
                         print(machine_string)
                 else:
                     vd = stylize(VECTORDASH_URL + "create/", fg("blue"))
-                    print("You currently haven no instances. Go to " + vd + " to start an instance.")
+                    print("You currently have no instances. Go to " + vd + " to start an instance.")
             else:
                 print(stylize("Invalid token. Please enter a valid token.", fg("red")))
 
