@@ -3,15 +3,17 @@ import os
 from colored import fg
 from colored import stylize
 
+# getting the base API URL
+if os.environ.get('VECTORDASH_BASE_URL'):
+    VECTORDASH_URL = os.environ.get('VECTORDASH_BASE_URL')
+else:
+    VECTORDASH_URL = "https://vectordash.com/"
 
 
-@click.command(name='secret')
-@click.argument('token', required=True, nargs=1)
-def secret(token):
+@click.command(name='login')
+def login():
     """
-    args: <token>
     Stores the user's secret token
-
     """
     try:
         # defining the dot folder path and token file name
@@ -21,6 +23,9 @@ def secret(token):
         # ensuring ~/.vectordash/ exists
         if not os.path.isdir(dot_folder):
             os.mkdir(dot_folder)
+
+        print("Your secret key can be found at: {}edit/verification".format(VECTORDASH_URL))
+        token = input("Secret: ")
 
         # writing out the token
         with open(token_path, 'w') as f:
