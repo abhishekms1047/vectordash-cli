@@ -97,11 +97,18 @@ def jupyter(machine):
                     local_port = None
                     while local_port is None:
                         try_port = random.randint(1024, 49152)
-                        cmd = ['lsof', '-i', ':{}'.format(try_port)]
-                        res = subprocess.call(cmd)
-                        if res != 0:
-                            local_port = try_port
-                            break                    
+                        try:
+                            cmd = ['lsof', '-i', ':{}'.format(try_port)]
+                            res = subprocess.call(cmd)
+                            if res != 0:
+                                local_port = try_port
+                                break 
+                        except:
+                            break 
+                    
+                    if local_port is None:
+                        local_port = random.randint(1024, 49152)
+                                   
 
                     # Serve Jupyter from REMOTE location
                     # remote port (container)
